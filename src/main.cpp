@@ -18,6 +18,37 @@
 #include <glm/gtc/random.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+//#include "World.h"
+//#include "Segment.h"
+//#include "SegmentResourceManager.h"
+
+/*
+World * createWorld() {
+  // TODO: Use unique pointers.
+  // Create the world.
+  World * world = new World(window);
+
+  std::cout << "Got here2" << endl;
+
+  // Add objects to the world.
+  float radius = 2.0f;
+  glm::vec3 position = glm::vec3(0.0, 0.0, 0.0);
+  float height = 5.0f;
+  SegmentResourceManager * segment_resource_manager =
+      new SegmentResourceManager();
+
+  std::cout << "Got here3" << endl;
+  Segment * segment = new Segment(world->m_shader, radius, position, height,
+      segment_resource_manager);
+
+  std::cout << "Got herei4" << endl;
+  world->addEntity(segment);
+  std::cout << "Got here" << endl;
+
+  return world;
+}
+*/
+
 int main(int argc, char** argv) {
   srand(time(NULL));
 
@@ -26,50 +57,78 @@ int main(int argc, char** argv) {
     return -1;
   }
 
-  GLFWwindow* window;
-
-  // TODO: Figure out whether to use these.
-  /*
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // don't show
-    the cursor
-  */
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
   /* Create a windowed mode window and its OpenGL context */
-  window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+  GLFWwindow * window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
   if (!window) {
     std::cerr << "Failed to initialize window" << std::endl;
     glfwTerminate();
     return -1;
   }
 
-  glewExperimental = GL_TRUE;
-  glewInit();
+  /* Make the window's context current */
+  glfwMakeContextCurrent(window);
+  std::cout << glGetString(GL_VERSION) << std::endl;
 
-  // TODO: Decide whether I need this
-  /*
+  // Don't show the cursor.
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  std::cout << glGetString(GL_VERSION) << std::endl;
+
+  // Set this to true so GLEW knows to use a modern approach to retrieving
+  // function pointers and extensions
+  glewExperimental = GL_TRUE;
+  std::cout << glGetString(GL_VERSION) << std::endl;
+
+  // Initialize GLEW to setup the OpenGL Function pointers
+  GLenum err = glewInit();
+  if (err != GLEW_OK) {
+    /* Problem: glewInit failed, something is seriously wrong. */
+  std::cout << glGetString(GL_VERSION) << std::endl;
+    fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+    glfwTerminate();
+    return -1;
+  }
+
+/*
+    // Define the viewport dimensions
     int w, h;
     glfwGetFramebufferSize(window, &w, &h);
     glViewport(0, 0, w, h);
-  */
+*/
 
-  /* Make the window's context current */
-  glfwMakeContextCurrent(window);
+//  World * world = createWorld();
+
+
+  // Set up variables for time calculations.
+//  GLfloat deltaTime = 0.0f;
+//  GLfloat timeOfLastFrame = 0.0f;
 
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window)) {
+/*
+        // Calculate deltatime of current frame
+        GLfloat timeOfCurrentFrame = glfwGetTime();
+        deltaTime = timeOfCurrentFrame - timeOfLastFrame;
+        timeOfLastFrame = timeOfCurrentFrame;
+
+//        handleInput();
+        world->update(deltaTime);
+        world->render();
+*/
+
     /* Render here */
-    glClear(GL_COLOR_BUFFER_BIT);
+//    glClear(GL_COLOR_BUFFER_BIT);
 
     /* Swap front and back buffers */
-    glfwSwapBuffers(window);
+//    glfwSwapBuffers(window);
 
     /* Poll for and process events */
-    glfwPollEvents();
+//    glfwPollEvents();
   }
 
   glfwTerminate();

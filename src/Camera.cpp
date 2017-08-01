@@ -1,20 +1,20 @@
 // From hws/hw2/Camera.h
 
-#include <GL/glew.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+//#include <GL/glew.h>
+//#include <glm/glm.hpp>
+//#include <glm/gtc/matrix_transform.hpp>
 
 #include "Camera.h"
 
 // Returns the view matrix calculated using Eular Angles and the LookAt Matrix
-glm::mat4 GetViewMatrix() {
+glm::mat4 Camera::GetViewMatrix() {
   return glm::lookAt(this->Position, this->Position + this->Front, this->Up);
 }
 
 // Processes input received from any keyboard-like input system. Accepts input
 // parameter in the form of camera defined ENUM (to abstract it from windowing
 // systems)
-void ProcessKeyboard(Camera_Movement direction, GLfloat deltaTime) {
+void Camera::ProcessKeyboard(Camera_Movement direction, GLfloat deltaTime) {
   GLfloat velocity = this->MovementSpeed * deltaTime;
   if (direction == FORWARD) this->Position += this->Front * velocity;
   if (direction == BACKWARD) this->Position -= this->Front * velocity;
@@ -24,8 +24,8 @@ void ProcessKeyboard(Camera_Movement direction, GLfloat deltaTime) {
 
 // Processes input received from a mouse input system. Expects the offset value
 // in both the x and y direction.
-void ProcessMouseMovement(GLfloat xoffset, GLfloat yoffset,
-                          GLboolean constrainPitch = true) {
+void Camera::ProcessMouseMovement(GLfloat xoffset, GLfloat yoffset,
+                          GLboolean constrainPitch) {
   xoffset *= this->MouseSensitivity;
   yoffset *= this->MouseSensitivity;
 
@@ -44,14 +44,14 @@ void ProcessMouseMovement(GLfloat xoffset, GLfloat yoffset,
 
 // Processes input received from a mouse scroll-wheel event. Only requires input
 // on the vertical wheel-axis
-void ProcessMouseScroll(GLfloat yoffset) {
+void Camera::ProcessMouseScroll(GLfloat yoffset) {
   if (this->Zoom >= 1.0f && this->Zoom <= 45.0f) this->Zoom -= yoffset;
   if (this->Zoom <= 1.0f) this->Zoom = 1.0f;
   if (this->Zoom >= 45.0f) this->Zoom = 45.0f;
 }
 
 // Calculates the front vector from the Camera's (updated) Eular Angles
-void updateCameraVectors() {
+void Camera::updateCameraVectors() {
   // Calculate the new Front vector
   glm::vec3 front;
   front.x = cos(glm::radians(this->Yaw)) * cos(glm::radians(this->Pitch));

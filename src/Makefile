@@ -201,6 +201,87 @@ trees/fast:
 	cd /home/jen/Code/cs148/cs148-project && $(MAKE) -f src/CMakeFiles/trees.dir/build.make src/CMakeFiles/trees.dir/build
 .PHONY : trees/fast
 
+Camera.o: Camera.cpp.o
+
+.PHONY : Camera.o
+
+# target to build an object file
+Camera.cpp.o:
+	cd /home/jen/Code/cs148/cs148-project && $(MAKE) -f src/CMakeFiles/trees_lib.dir/build.make src/CMakeFiles/trees_lib.dir/Camera.cpp.o
+.PHONY : Camera.cpp.o
+
+Camera.i: Camera.cpp.i
+
+.PHONY : Camera.i
+
+# target to preprocess a source file
+Camera.cpp.i:
+	cd /home/jen/Code/cs148/cs148-project && $(MAKE) -f src/CMakeFiles/trees_lib.dir/build.make src/CMakeFiles/trees_lib.dir/Camera.cpp.i
+.PHONY : Camera.cpp.i
+
+Camera.s: Camera.cpp.s
+
+.PHONY : Camera.s
+
+# target to generate assembly for a file
+Camera.cpp.s:
+	cd /home/jen/Code/cs148/cs148-project && $(MAKE) -f src/CMakeFiles/trees_lib.dir/build.make src/CMakeFiles/trees_lib.dir/Camera.cpp.s
+.PHONY : Camera.cpp.s
+
+Segment.o: Segment.cpp.o
+
+.PHONY : Segment.o
+
+# target to build an object file
+Segment.cpp.o:
+	cd /home/jen/Code/cs148/cs148-project && $(MAKE) -f src/CMakeFiles/trees_lib.dir/build.make src/CMakeFiles/trees_lib.dir/Segment.cpp.o
+.PHONY : Segment.cpp.o
+
+Segment.i: Segment.cpp.i
+
+.PHONY : Segment.i
+
+# target to preprocess a source file
+Segment.cpp.i:
+	cd /home/jen/Code/cs148/cs148-project && $(MAKE) -f src/CMakeFiles/trees_lib.dir/build.make src/CMakeFiles/trees_lib.dir/Segment.cpp.i
+.PHONY : Segment.cpp.i
+
+Segment.s: Segment.cpp.s
+
+.PHONY : Segment.s
+
+# target to generate assembly for a file
+Segment.cpp.s:
+	cd /home/jen/Code/cs148/cs148-project && $(MAKE) -f src/CMakeFiles/trees_lib.dir/build.make src/CMakeFiles/trees_lib.dir/Segment.cpp.s
+.PHONY : Segment.cpp.s
+
+World.o: World.cpp.o
+
+.PHONY : World.o
+
+# target to build an object file
+World.cpp.o:
+	cd /home/jen/Code/cs148/cs148-project && $(MAKE) -f src/CMakeFiles/trees_lib.dir/build.make src/CMakeFiles/trees_lib.dir/World.cpp.o
+.PHONY : World.cpp.o
+
+World.i: World.cpp.i
+
+.PHONY : World.i
+
+# target to preprocess a source file
+World.cpp.i:
+	cd /home/jen/Code/cs148/cs148-project && $(MAKE) -f src/CMakeFiles/trees_lib.dir/build.make src/CMakeFiles/trees_lib.dir/World.cpp.i
+.PHONY : World.cpp.i
+
+World.s: World.cpp.s
+
+.PHONY : World.s
+
+# target to generate assembly for a file
+World.cpp.s:
+	cd /home/jen/Code/cs148/cs148-project && $(MAKE) -f src/CMakeFiles/trees_lib.dir/build.make src/CMakeFiles/trees_lib.dir/World.cpp.s
+.PHONY : World.cpp.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -246,6 +327,15 @@ help:
 	@echo "... install/local"
 	@echo "... trees"
 	@echo "... edit_cache"
+	@echo "... Camera.o"
+	@echo "... Camera.i"
+	@echo "... Camera.s"
+	@echo "... Segment.o"
+	@echo "... Segment.i"
+	@echo "... Segment.s"
+	@echo "... World.o"
+	@echo "... World.i"
+	@echo "... World.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

@@ -1,8 +1,21 @@
 // From hws/hw2/World.h
+// TODO: Remove unused imports
+
+#include <vector>
+
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
+// GLM Mathematics
+#define GLM_FORCE_RADIANS  // force everything in radian
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/random.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "World.h"
 
-void render() const {
+void World::render() const {
   // OpenGL options
   glEnable(GL_DEPTH_TEST);
 
@@ -51,11 +64,11 @@ void render() const {
   glfwSwapBuffers(m_window);
 }
 
-void update(double time_since_last_update) {
-  if (m_is_paused) {
+void World::update(double time_since_last_update) {
+/*  if (m_is_paused) {
     return;
   }
-
+*/
   for (size_t i = 0; i < m_entities.size(); i++) {
     Entity *curr = m_entities.at(i);
 
@@ -66,10 +79,11 @@ void update(double time_since_last_update) {
   }
 }
 
-void addEntity(Entity *entity) { m_entities.push_back(entity); }
+void World::addEntity(Entity * entity) { m_entities.push_back(entity); }
 
-void togglePause() { m_is_paused = !m_is_paused; }
+//void togglePause() { m_is_paused = !m_is_paused; }
 
+/*
 void toggleGlobalRotation() {
   for (size_t i = 0; i < m_entities.size(); i++) {
     Entity *curr = m_entities.at(i);
@@ -105,8 +119,9 @@ void fireFireworks() {
     }
   }
 }
+*/
 
-void handleCollisions(Entity *entity) {
+void World::handleCollisions(Entity *entity) {
   // The state engine might do things here like handle
   // physical collisions between the world's entities
 }

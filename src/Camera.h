@@ -3,8 +3,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#pragma once
-
 // Std. Includes
 #include <vector>
 

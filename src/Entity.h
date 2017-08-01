@@ -1,12 +1,17 @@
 // From hws/hw2/Entity.h
 // TODO: Break into h and cpp file
 
+#ifndef ENTITY_H
+#define ENTITY_H
+
 // GLM Mathematics
 #define GLM_FORCE_RADIANS  // force everything in radians
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/random.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include "Shader.h"
 
 //===========================================================
 // Class : Entity
@@ -25,6 +30,8 @@ typedef enum et {
   ET_CUBE,
   ET_FIREWORK,
   ET_LIGHT,
+  ET_SEGMENT,
+  ET_TREE,
 } EntityType;
 
 class Entity {
@@ -53,3 +60,5 @@ class Entity {
 
   Shader* m_shader;
 };
+
+#endif
