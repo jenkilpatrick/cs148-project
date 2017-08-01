@@ -1,0 +1,67 @@
+// From hws/hw2/World.h
+
+#ifndef WORLD_H
+#define WORLD_H
+
+#include <vector>
+
+#include <GLFW/glfw3.h>
+
+// GLM Mathematics
+#define GLM_FORCE_RADIANS  // force everything in radian
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/random.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "Camera.h"
+#include "Shader.h"
+
+class Entity;
+
+using namespace std;
+
+//===========================================================
+// Class : World
+// The entire world in which all entities exist
+//===========================================================
+
+class World {
+ public:
+  World(GLFWwindow *window) {
+    m_window = window;
+#ifdef WIN32
+    m_shader = new Shader("../phong.vs", "../phong.frag");
+#else
+    m_shader = new Shader("/home/jen/Code/cs148/cs148-project/bin/phong.vs",
+                          "/home/jen/Code/cs148/cs148-project/bin/phong.frag");
+#endif
+    m_camera = new Camera(glm::vec3(0.0f, 0.0f, 14.0f));
+  }
+
+  ~World() {
+    for (size_t i = 0; i < m_entities.size(); i++) {
+      Entity *curr = m_entities.at(i);
+      if (curr) delete curr;
+    }
+
+    if (m_shader) delete m_shader;
+    if (m_camera) delete m_camera;
+  }
+
+  void render() const;
+  void update(double time_since_last_update);
+
+  Shader *m_shader;
+  Camera *m_camera;
+
+ private:
+  GLFWwindow *m_window;
+
+  void handleCollisions(Entity *entity);
+
+  vector<Entity *> m_entities;
+  bool m_is_paused = false;
+};
+
+#endif
