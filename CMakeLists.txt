@@ -32,10 +32,9 @@ INCLUDE_DIRECTORIES("${MAINFOLDER}/include")
 if(WIN32)
 
 else()
+    SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra -Werror -Wfloat-equal -Wno-unused-parameter -Wno-unknown-pragmas -Wno-deprecated-declarations -Wno-pessimizing-move")
     if(APPLE)
-        SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra -Werror -Wfloat-equal -Wno-unused-parameter -Wno-unknown-pragmas -Wno-deprecated-declarations") 
     elseif(UNIX)
-        SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra -Werror -Wfloat-equal -Wno-unused-parameter -Wno-unknown-pragmas -Wno-deprecated-declarations -Wno-pessimizing-move")
         add_definitions(-DGLEW_EGL)
     endif()
 endif()
@@ -60,4 +59,5 @@ SET(GLEW_INCLUDE_PATH "${MAINFOLDER}/lib/glew/include")
 SET(GLM_INCLUDE_PATH "${MAINFOLDER}/lib/glm")
 
 
-ADD_SUBDIRECTORY(src)
+#ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(hw2)

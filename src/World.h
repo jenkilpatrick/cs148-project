@@ -61,7 +61,7 @@ class World {
   Camera * m_camera;
 
  private:
-  GLFWwindow *m_window;
+  GLFWwindow * m_window;
   vector<Entity *> m_entities;
 
   void handleCollisions(Entity * entity);
