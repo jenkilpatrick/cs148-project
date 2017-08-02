@@ -19,46 +19,27 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Light.h"
-#include "World.h"
 #include "Segment.h"
 #include "SegmentResourceManager.h"
+#include "World.h"
 
-World * createWorld(GLFWwindow * window) {
-  // TODO: Use unique pointers.
-  // Create the world.
-  World * world = new World(window);
+// UGH is there a way to get rid of this global??
+World* g_world;
 
-  std::cout << "Got here2" << endl;
+// Window dimensions
+const GLuint WIDTH = 800, HEIGHT = 600;
 
-  // Add objects to the world.
-  float radius = 2.0f;
-  glm::vec3 position = glm::vec3(0.0, 0.0, 0.0);
-  float height = 5.0f;
-  SegmentResourceManager * segment_resource_manager =
-      new SegmentResourceManager();
+GLfloat lastX = WIDTH / 2.0;
+GLfloat lastY = HEIGHT / 2.0;
+bool keys[1024];
 
-  std::cout << "Got here3" << endl;
-  Segment * segment = new Segment(world->m_shader, radius, position, height,
-      segment_resource_manager);
-
-  std::cout << "Got herei4" << endl;
-  world->addEntity(segment);
-  std::cout << "Got here" << endl;
-
-  Light * light = new Light(world->m_shader, glm::vec3(0.0f, 0.0f, 9.0f));
-  world->addEntity(light);
-
-  return world;
-}
-
-int main(int argc, char** argv) {
-  srand(time(NULL));
-
+GLFWwindow* setupWindow() {
   if (!glfwInit()) {
     std::cerr << "Failed to initialize GLFW" << std::endl;
-    return -1;
+    return NULL;
   }
 
+  // Set required options for GLFW.
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -66,16 +47,13 @@ int main(int argc, char** argv) {
   glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
   /* Create a windowed mode window and its OpenGL context */
-  GLFWwindow * window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+  GLFWwindow* window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
   if (!window) {
     std::cerr << "Failed to initialize window" << std::endl;
     glfwTerminate();
-    return -1;
+    return NULL;
   }
-
-  /* Make the window's context current */
   glfwMakeContextCurrent(window);
-  std::cout << glGetString(GL_VERSION) << std::endl;
 
   // Don't show the cursor.
   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -85,24 +63,111 @@ int main(int argc, char** argv) {
   glewExperimental = GL_TRUE;
 
   // Initialize GLEW to setup the OpenGL Function pointers
-  GLenum err = glewInit();
-  std::cout << err << std::endl;
-
-//  if (err != GLEW_OK) {
-    /* Problem: glewInit failed, something is seriously wrong. */
-//    fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-//    glfwTerminate();
-//    return -1;
-//  }
+  glewInit();
 
   // Define the viewport dimensions
   int w, h;
   glfwGetFramebufferSize(window, &w, &h);
   glViewport(0, 0, w, h);
 
-  World * world = createWorld(window);
-  std::cout << world << std::endl;
+  return window;
+}
 
+// Is called whenever a key is pressed/released via GLFW
+void key_callback(GLFWwindow* window, int key, int scancode, int action,
+                  int mode) {
+  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+    glfwSetWindowShouldClose(window, GL_TRUE);
+  }
+
+  if (key >= 0 && key < 1024) {
+    if (action == GLFW_PRESS) {
+      keys[key] = true;
+    } else if (action == GLFW_RELEASE) {
+      keys[key] = false;
+      if (key == GLFW_KEY_2) {
+        // TODO: Do something.
+      }
+    }
+  }
+}
+
+// Control camera movement with mouse motion
+bool firstMouse = true;
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+  if (firstMouse) {
+    lastX = xpos;
+    lastY = ypos;
+    firstMouse = false;
+  }
+
+  GLfloat xoffset = xpos - lastX;
+  GLfloat yoffset =
+      lastY - ypos;  // Reversed since y-coordinates go from bottom to top
+
+  lastX = xpos;
+  lastY = ypos;
+
+  g_world->m_camera->ProcessMouseMovement(xoffset, yoffset);
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+  g_world->m_camera->ProcessMouseScroll(yoffset);
+}
+
+void setupInputHandlers(GLFWwindow* window) {
+  glfwSetKeyCallback(window, key_callback);
+  glfwSetCursorPosCallback(window, mouse_callback);
+  glfwSetScrollCallback(window, scroll_callback);
+}
+
+World* createWorld(GLFWwindow* window) {
+  // TODO: Use unique pointers.
+  // Create the world.
+  World* world = new World(window);
+
+  // Add objects to the world.
+  float radius = 2.0f;
+  glm::vec3 position = glm::vec3(0.0, 0.0, 0.0);
+  float height = 5.0f;
+  SegmentResourceManager* segment_resource_manager =
+      new SegmentResourceManager();
+  Segment* segment = new Segment(world->m_shader, radius, position, height,
+                                 segment_resource_manager);
+
+  world->addEntity(segment);
+
+  Light* light = new Light(world->m_shader, glm::vec3(0.0f, 0.0f, 9.0f));
+  world->addEntity(light);
+
+  return world;
+}
+
+// Control camera movement with keyboard keys
+void handleInput(World* world, GLfloat deltaTime) {
+  glfwPollEvents();
+
+  if (!world || !world->m_camera) {
+    return;
+  }
+
+  if (keys[GLFW_KEY_W]) world->m_camera->ProcessKeyboard(FORWARD, deltaTime);
+  if (keys[GLFW_KEY_S]) world->m_camera->ProcessKeyboard(BACKWARD, deltaTime);
+  if (keys[GLFW_KEY_A]) world->m_camera->ProcessKeyboard(LEFT, deltaTime);
+  if (keys[GLFW_KEY_D]) world->m_camera->ProcessKeyboard(RIGHT, deltaTime);
+}
+
+int main(int argc, char** argv) {
+  srand(time(NULL));
+
+  GLFWwindow* window = setupWindow();
+  if (!window) {
+    return -1;
+  }
+
+  setupInputHandlers(window);
+  World* world = createWorld(window);
+  g_world = world;
 
   // Set up variables for time calculations.
   GLfloat deltaTime = 0.0f;
@@ -110,25 +175,13 @@ int main(int argc, char** argv) {
 
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window)) {
+    GLfloat timeOfCurrentFrame = glfwGetTime();
+    deltaTime = timeOfCurrentFrame - timeOfLastFrame;
+    timeOfLastFrame = timeOfCurrentFrame;
 
-        // Calculate deltatime of current frame
-        GLfloat timeOfCurrentFrame = glfwGetTime();
-        deltaTime = timeOfCurrentFrame - timeOfLastFrame;
-        timeOfLastFrame = timeOfCurrentFrame;
-
-//        handleInput();
-        world->update(deltaTime);
-        world->render();
-
-
-    /* Render here */
-//    glClear(GL_COLOR_BUFFER_BIT);
-
-    /* Swap front and back buffers */
-//    glfwSwapBuffers(window);
-
-    /* Poll for and process events */
-//    glfwPollEvents();
+    handleInput(world, deltaTime);
+    world->update(deltaTime);
+    world->render();
   }
 
   glfwTerminate();
