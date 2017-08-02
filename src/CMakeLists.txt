@@ -14,10 +14,11 @@ SET(project_BIN ${PROJECT_NAME})
 SET(project_LIB ${PROJECT_NAME}_lib CACHE INTERNAL "Project Library")
 
 SET(project_SRCS
-#        Camera.cpp
+        Camera.cpp
+        Light.cpp
         main.cpp
-#        Segment.cpp
-#        World.cpp
+        Segment.cpp
+        World.cpp
 )
 
 ADD_LIBRARY(${project_LIB} ${project_SRCS})

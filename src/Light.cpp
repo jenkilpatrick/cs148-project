@@ -1,6 +1,8 @@
 // From hws/hw2/Light.h
 
-void render() const {
+#include "Light.h"
+
+void Light::render() const {
   if (m_shader) {
     m_shader->Use();
 
@@ -13,9 +15,9 @@ void render() const {
   }
 }
 
-void toggleBlue() { m_is_blue = !m_is_blue; }
+void Light::toggleBlue() { m_is_blue = !m_is_blue; }
 
-void toggleRotation() {
+void Light::toggleRotation() {
   m_rotate = !m_rotate;
   if (m_rotate) {
     m_theta_deg = 0;
@@ -24,7 +26,7 @@ void toggleRotation() {
   }
 }
 
-void update(double time_since_last_update) {
+void Light::update(double time_since_last_update) {
   // Set color to white or blue.
   m_color = glm::vec4(m_is_blue ? 0.0 : 1.0, m_is_blue ? 0.0 : 1.0, 1.0, 1.0);
 

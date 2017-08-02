@@ -1,11 +1,9 @@
 // From hws/hw2/Light.h
 
-#ifndef ENTITY_H
-#define ENTITY_H
+#ifndef LIGHT_H
+#define LIGHT_H
 
 #include "Entity.h"
-
-class Entity;
 
 //===========================================================
 // Class : Light

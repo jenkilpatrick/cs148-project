@@ -18,12 +18,12 @@
 #include <glm/gtc/random.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-//#include "World.h"
-//#include "Segment.h"
-//#include "SegmentResourceManager.h"
+#include "Light.h"
+#include "World.h"
+#include "Segment.h"
+#include "SegmentResourceManager.h"
 
-/*
-World * createWorld() {
+World * createWorld(GLFWwindow * window) {
   // TODO: Use unique pointers.
   // Create the world.
   World * world = new World(window);
@@ -45,9 +45,11 @@ World * createWorld() {
   world->addEntity(segment);
   std::cout << "Got here" << endl;
 
+  Light * light = new Light(world->m_shader, glm::vec3(0.0f, 0.0f, 9.0f));
+  world->addEntity(light);
+
   return world;
 }
-*/
 
 int main(int argc, char** argv) {
   srand(time(NULL));
@@ -84,30 +86,31 @@ int main(int argc, char** argv) {
 
   // Initialize GLEW to setup the OpenGL Function pointers
   GLenum err = glewInit();
-  if (err != GLEW_OK) {
+  std::cout << err << std::endl;
+
+//  if (err != GLEW_OK) {
     /* Problem: glewInit failed, something is seriously wrong. */
-    fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-    glfwTerminate();
-    return -1;
-  }
+//    fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+//    glfwTerminate();
+//    return -1;
+//  }
 
-/*
-    // Define the viewport dimensions
-    int w, h;
-    glfwGetFramebufferSize(window, &w, &h);
-    glViewport(0, 0, w, h);
-*/
+  // Define the viewport dimensions
+  int w, h;
+  glfwGetFramebufferSize(window, &w, &h);
+  glViewport(0, 0, w, h);
 
-//  World * world = createWorld();
+  World * world = createWorld(window);
+  std::cout << world << std::endl;
 
 
   // Set up variables for time calculations.
-//  GLfloat deltaTime = 0.0f;
-//  GLfloat timeOfLastFrame = 0.0f;
+  GLfloat deltaTime = 0.0f;
+  GLfloat timeOfLastFrame = 0.0f;
 
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window)) {
-/*
+
         // Calculate deltatime of current frame
         GLfloat timeOfCurrentFrame = glfwGetTime();
         deltaTime = timeOfCurrentFrame - timeOfLastFrame;
@@ -116,7 +119,7 @@ int main(int argc, char** argv) {
 //        handleInput();
         world->update(deltaTime);
         world->render();
-*/
+
 
     /* Render here */
 //    glClear(GL_COLOR_BUFFER_BIT);
