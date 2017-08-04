@@ -16,28 +16,16 @@ void Segment::render() const {
     glUniform3f(objectColorLoc, m_color[0], m_color[1], m_color[2]);
 
     // Calculate relevant vertical axes.
-//    glm::vec3 up = glm::vec3(0.0, 1.0, 0.0);
+//    glm::vec3 x_axis = glm::vec3(1.0f, 0.0f, 0.0f);
+//    glm::vec3 y_axis = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 z_axis = glm::vec3(0.0f, 0.0f, 1.0f);
 
     // Compute model matrix
-    glm::mat4 scaled_matrix = glm::scale(
-        glm::mat4(), glm::vec3(m_radius, m_height, 1.0f));
-    glm::mat4 output_matrix = glm::translate(scaled_matrix, m_pos);
-
-    // TODO: Allow segment to be rotated.
-
-/*
-    glm::mat4 rotatedCubeModelMat4 = glm::rotate(
-        glm::mat4(), m_global_rotation_theta_deg * glm::pi<float>() / 180.0f,
-        up);
-    glm::mat4 translatedCubeModelMat4 =
-        glm::translate(rotatedCubeModelMat4, glm::vec3(m_pos));
-    glm::mat4 translatedScaledCubeModelMat4 =
-        glm::scale(translatedCubeModelMat4,
-                   glm::vec3(m_size_scaling_factor * m_current_breath_amt));
-    glm::mat4 translatedScaledRotatedCubeModelMat4 =
-        glm::rotate(translatedScaledCubeModelMat4,
-                    m_local_rotation_theta_deg * glm::pi<float>() / 180.0f, up);
-*/
+    glm::mat4 translated_matrix = glm::translate(glm::mat4(), m_pos);
+    glm::mat4 rotated_matrix = glm::rotate(translated_matrix,
+        m_rotation_angle * glm::pi<float>() / 180.0f, z_axis);
+    glm::mat4 output_matrix = glm::scale(
+        rotated_matrix, glm::vec3(m_radius, m_height, m_radius));
 
     // Get the locations of uniforms for the shader.
     GLint modelLoc = glGetUniformLocation(m_shader->Program, "model");
