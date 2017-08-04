@@ -19,9 +19,11 @@ void Segment::render() const {
 //    glm::vec3 up = glm::vec3(0.0, 1.0, 0.0);
 
     // Compute model matrix
-    glm::mat4 output_matrix = glm::translate(glm::mat4(), m_pos);
+    glm::mat4 scaled_matrix = glm::scale(
+        glm::mat4(), glm::vec3(m_radius, m_height, 1.0f));
+    glm::mat4 output_matrix = glm::translate(scaled_matrix, m_pos);
 
-    // TODO: Allow segment to be rotated, scaled, stretched.
+    // TODO: Allow segment to be rotated.
 
 /*
     glm::mat4 rotatedCubeModelMat4 = glm::rotate(
