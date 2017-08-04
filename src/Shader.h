@@ -21,7 +21,6 @@ class Shader {
     std::ifstream vShaderFile;
     std::ifstream fShaderFile;
 
-    std::cout << "shader" << std::endl;
     // ensures ifstream objects can throw exceptions:
     vShaderFile.exceptions(std::ifstream::badbit);
     fShaderFile.exceptions(std::ifstream::badbit);
@@ -31,17 +30,14 @@ class Shader {
       fShaderFile.open(fragmentPath);
       std::stringstream vShaderStream, fShaderStream;
 
-      std::cout << "shader2" << std::endl;
       // Read file's buffer contents into streams
       vShaderStream << vShaderFile.rdbuf();
       fShaderStream << fShaderFile.rdbuf();
 
-      std::cout << "shader3" << std::endl;
       // close file handlers
       vShaderFile.close();
       fShaderFile.close();
 
-      std::cout << "shader4" << std::endl;
       // Convert stream into string
       vertexCode = vShaderStream.str();
       fragmentCode = fShaderStream.str();
@@ -49,11 +45,8 @@ class Shader {
       std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
     }
 
-    std::cout << "shader5" << std::endl;
-
     const GLchar* vShaderCode = vertexCode.c_str();
     const GLchar* fShaderCode = fragmentCode.c_str();
-    std::cout << "shader6" << std::endl;
 
     // 2. Compile shaders
     GLuint vertex, fragment;
@@ -61,9 +54,7 @@ class Shader {
     GLchar infoLog[512];
 
     // Vertex Shader
-    std::cout << "shader6" << std::endl;
     vertex = glCreateShader(GL_VERTEX_SHADER);
-    std::cout << "shader7" << std::endl;
     glShaderSource(vertex, 1, &vShaderCode, NULL);
     glCompileShader(vertex);
 
@@ -87,8 +78,6 @@ class Shader {
       std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
                 << infoLog << std::endl;
     }
-
-    std::cout << "shader" << std::endl;
 
     // Shader Program
     this->Program = glCreateProgram();
