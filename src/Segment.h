@@ -18,8 +18,9 @@ class Segment : public Entity {
  public:
   Segment(Shader* shader, float radius, glm::vec3 position, float height,
         float rotation_angle, glm::vec4 color,
-        SegmentResourceManager * resource_manager) {
+        SegmentResourceManager * resource_manager, int num_iterations) {
     m_type = ET_SEGMENT;
+    std::cout << "Starting Segment" << std::endl;
 
     // TODO: Replace with parent constructor?
     // Set parent class's variables.
@@ -32,15 +33,23 @@ class Segment : public Entity {
     m_height = height;
     m_rotation_angle = rotation_angle;
     m_resource_manager = resource_manager;
+
+    if (num_iterations > 0) {
+      glm::vec3 branch_position = position;
+      branch_position[0] += height * cos(glm::radians<float>(90.0 + rotation_angle));
+      branch_position[1] += height * sin(glm::radians<float>(90.0 + rotation_angle));
+      m_left_segment = new Segment(m_shader, radius / 2.0, branch_position,
+          height / 2.0, rotation_angle + 30.0f, color, resource_manager,
+          num_iterations - 1);
+      m_right_segment = new Segment(m_shader, radius / 2.0, branch_position,
+          height / 2.0, rotation_angle - 30.0f, color, resource_manager,
+          num_iterations - 1);
+    }
   }
 
   ~Segment() {
-    /*
-            for(size_t i = 0; i < m_sparks.size(); i++) {
-                Entity * curr = m_sparks.at(i);
-                if (curr) delete curr;
-            }
-    */
+    if (m_left_segment) delete m_left_segment;
+    if (m_right_segment) delete m_right_segment;
   }
 
   void render() const;
@@ -51,6 +60,8 @@ class Segment : public Entity {
   float m_height;
   float m_rotation_angle;
   SegmentResourceManager * m_resource_manager;
+  Segment * m_left_segment = NULL;
+  Segment * m_right_segment = NULL;
 };
 
 #endif

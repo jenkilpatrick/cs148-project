@@ -21,6 +21,7 @@
 #include "Light.h"
 #include "Segment.h"
 #include "SegmentResourceManager.h"
+#include "Tree.h"
 #include "World.h"
 
 // UGH is there a way to get rid of this global??
@@ -126,21 +127,14 @@ World* createWorld(GLFWwindow* window) {
   // Create the world.
   World* world = new World(window);
 
-  // Add objects to the world.
-  float radius = 0.5f;
-  glm::vec3 position = glm::vec3(0.0, 0.0, 0.0);
-  float height = 5.0f;
-  float rotation_angle = 30.0f;
-  glm::vec4 color = glm::vec4(0.7f, 0.17f, 0.17f, 1.0f);
+  glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
   SegmentResourceManager* segment_resource_manager =
       new SegmentResourceManager();
-  Segment* segment = new Segment(world->m_shader, radius, position, height,
-      rotation_angle, color, segment_resource_manager);
-
-  world->addEntity(segment);
+  world->addEntity(
+      new Tree(world->m_shader, position, segment_resource_manager));
 
   world->addEntity(new Light(world->m_shader, glm::vec3(0.0f, 0.0f, 9.0f)));
-  world->addEntity(new Light(world->m_shader, glm::vec3(-3.0f, 0.0f, 9.0f)));
+  world->addEntity(new Light(world->m_shader, glm::vec3(-9.0f, 0.0f, 9.0f)));
 
   return world;
 }

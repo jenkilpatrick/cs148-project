@@ -18,6 +18,7 @@ SET(project_SRCS
         Light.cpp
         main.cpp
         Segment.cpp
+        Tree.cpp
         World.cpp
 )
 

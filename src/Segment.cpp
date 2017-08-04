@@ -3,6 +3,8 @@
 #include "Segment.h"
 
 void Segment::render() const {
+  std::cout << "Rendering segment" << std::endl;
+
   // Render a segment as a basic cylinder.
 
   // Make sure always to set the current shader before setting
@@ -24,8 +26,10 @@ void Segment::render() const {
     glm::mat4 translated_matrix = glm::translate(glm::mat4(), m_pos);
     glm::mat4 rotated_matrix = glm::rotate(translated_matrix,
         m_rotation_angle * glm::pi<float>() / 180.0f, z_axis);
+    glm::mat4 shifted_matrix = glm::translate(
+        rotated_matrix, glm::vec3(0.0f, m_height / 2.0f, 0.0f));
     glm::mat4 output_matrix = glm::scale(
-        rotated_matrix, glm::vec3(m_radius, m_height, m_radius));
+        shifted_matrix, glm::vec3(m_radius, m_height, m_radius));
 
     // Get the locations of uniforms for the shader.
     GLint modelLoc = glGetUniformLocation(m_shader->Program, "model");
@@ -38,6 +42,12 @@ void Segment::render() const {
   glBindVertexArray(m_resource_manager->getContainerVAO());
   glDrawArrays(GL_TRIANGLES, 0, 36);
   glBindVertexArray(0);
+
+  if (m_left_segment) m_left_segment->render();
+  if (m_right_segment) m_right_segment->render();
 }
 
-void Segment::update(double time_since_last_update) {}
+void Segment::update(double time_since_last_update) {
+  if (m_left_segment) m_left_segment->update(time_since_last_update);
+  if (m_right_segment) m_right_segment->update(time_since_last_update);
+}
