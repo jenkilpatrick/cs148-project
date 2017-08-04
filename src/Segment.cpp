@@ -3,10 +3,6 @@
 #include "Segment.h"
 
 void Segment::render() const {
-  std::cout << "Rendering segment" << std::endl;
-
-  // Render a segment as a basic cylinder.
-
   // Make sure always to set the current shader before setting
   // uniforms/drawing objects
   if (m_shader) {
@@ -44,11 +40,13 @@ void Segment::render() const {
   glDrawArrays(GL_TRIANGLES, 0, 36);
   glBindVertexArray(0);
 
-  if (m_left_segment) m_left_segment->render();
-  if (m_right_segment) m_right_segment->render();
+  for (Segment * child : m_children) {
+    if (child) child->render();
+  }
 }
 
 void Segment::update(double time_since_last_update) {
-  if (m_left_segment) m_left_segment->update(time_since_last_update);
-  if (m_right_segment) m_right_segment->update(time_since_last_update);
+  for (Segment * child : m_children) {
+    if (child) child->update(time_since_last_update);
+  }
 }
