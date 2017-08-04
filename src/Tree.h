@@ -10,7 +10,6 @@
 #include "Segment.h"
 #include "SegmentResourceManager.h"
 
-
 //===========================================================
 // Class : Tree
 //===========================================================
@@ -18,7 +17,7 @@
 class Tree : public Entity {
  public:
   Tree(Shader* shader, glm::vec3 position,
-        SegmentResourceManager * segment_resource_manager) {
+       SegmentResourceManager* segment_resource_manager) {
     m_type = ET_TREE;
 
     m_shader = shader;
@@ -30,20 +29,17 @@ class Tree : public Entity {
     float rotation_angle = 0.0f;
     glm::vec4 color = glm::vec4(205.0f, 133.0f, 63.0f, 256.0f) / 256.0f;
 
-    m_trunk = new Segment(m_shader, radius, position, height,
-        rotation_angle, color, segment_resource_manager, 2);
-
+    m_trunk = new Segment(m_shader, radius, position, height, rotation_angle,
+                          color, segment_resource_manager, 2);
   }
 
-  ~Tree() {
-    delete m_trunk;
-  }
+  ~Tree() { delete m_trunk; }
 
   void render() const;
   void update(double time_since_last_update);
 
  protected:
-   Segment* m_trunk;
+  Segment* m_trunk;
 };
 
 #endif

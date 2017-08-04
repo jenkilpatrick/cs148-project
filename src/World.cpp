@@ -65,10 +65,10 @@ void World::render() const {
 }
 
 void World::update(double time_since_last_update) {
-/*  if (m_is_paused) {
-    return;
-  }
-*/
+  /*  if (m_is_paused) {
+      return;
+    }
+  */
   for (size_t i = 0; i < m_entities.size(); i++) {
     Entity *curr = m_entities.at(i);
 
@@ -79,9 +79,9 @@ void World::update(double time_since_last_update) {
   }
 }
 
-void World::addEntity(Entity * entity) { m_entities.push_back(entity); }
+void World::addEntity(Entity *entity) { m_entities.push_back(entity); }
 
-//void togglePause() { m_is_paused = !m_is_paused; }
+// void togglePause() { m_is_paused = !m_is_paused; }
 
 /*
 void toggleGlobalRotation() {

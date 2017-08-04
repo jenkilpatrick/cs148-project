@@ -7,8 +7,8 @@
 #include <vector>
 
 #include "Entity.h"
-#include "Shader.h"
 #include "SegmentResourceManager.h"
+#include "Shader.h"
 
 //===========================================================
 // Class : Segment
@@ -17,8 +17,8 @@
 class Segment : public Entity {
  public:
   Segment(Shader* shader, float radius, glm::vec3 position, float height,
-        float rotation_angle, glm::vec4 color,
-        SegmentResourceManager * resource_manager, int num_iterations) {
+          float rotation_angle, glm::vec4 color,
+          SegmentResourceManager* resource_manager, int num_iterations) {
     m_type = ET_SEGMENT;
     std::cout << "Starting Segment" << std::endl;
 
@@ -36,14 +36,16 @@ class Segment : public Entity {
 
     if (num_iterations > 0) {
       glm::vec3 branch_position = position;
-      branch_position[0] += height * cos(glm::radians<float>(90.0 + rotation_angle));
-      branch_position[1] += height * sin(glm::radians<float>(90.0 + rotation_angle));
+      branch_position[0] +=
+          height * cos(glm::radians<float>(90.0 + rotation_angle));
+      branch_position[1] +=
+          height * sin(glm::radians<float>(90.0 + rotation_angle));
       m_left_segment = new Segment(m_shader, radius / 2.0, branch_position,
-          height / 2.0, rotation_angle + 30.0f, color, resource_manager,
-          num_iterations - 1);
+                                   height / 2.0, rotation_angle + 30.0f, color,
+                                   resource_manager, num_iterations - 1);
       m_right_segment = new Segment(m_shader, radius / 2.0, branch_position,
-          height / 2.0, rotation_angle - 30.0f, color, resource_manager,
-          num_iterations - 1);
+                                    height / 2.0, rotation_angle - 30.0f, color,
+                                    resource_manager, num_iterations - 1);
     }
   }
 
@@ -59,9 +61,9 @@ class Segment : public Entity {
   float m_radius;
   float m_height;
   float m_rotation_angle;
-  SegmentResourceManager * m_resource_manager;
-  Segment * m_left_segment = NULL;
-  Segment * m_right_segment = NULL;
+  SegmentResourceManager* m_resource_manager;
+  Segment* m_left_segment = NULL;
+  Segment* m_right_segment = NULL;
 };
 
 #endif

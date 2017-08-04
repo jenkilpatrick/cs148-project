@@ -53,18 +53,18 @@ class World {
     if (m_camera) delete m_camera;
   }
 
-  void addEntity(Entity * entity);
+  void addEntity(Entity *entity);
   void render() const;
   void update(double time_since_last_update);
 
-  Shader * m_shader;
-  Camera * m_camera;
+  Shader *m_shader;
+  Camera *m_camera;
 
  private:
-  GLFWwindow * m_window;
+  GLFWwindow *m_window;
   vector<Entity *> m_entities;
 
-  void handleCollisions(Entity * entity);
+  void handleCollisions(Entity *entity);
 };
 
 #endif

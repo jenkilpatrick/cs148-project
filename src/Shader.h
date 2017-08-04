@@ -31,17 +31,17 @@ class Shader {
       fShaderFile.open(fragmentPath);
       std::stringstream vShaderStream, fShaderStream;
 
-    std::cout << "shader2" << std::endl;
+      std::cout << "shader2" << std::endl;
       // Read file's buffer contents into streams
       vShaderStream << vShaderFile.rdbuf();
       fShaderStream << fShaderFile.rdbuf();
 
-    std::cout << "shader3" << std::endl;
+      std::cout << "shader3" << std::endl;
       // close file handlers
       vShaderFile.close();
       fShaderFile.close();
 
-    std::cout << "shader4" << std::endl;
+      std::cout << "shader4" << std::endl;
       // Convert stream into string
       vertexCode = vShaderStream.str();
       fragmentCode = fShaderStream.str();

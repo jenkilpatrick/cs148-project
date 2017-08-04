@@ -18,18 +18,19 @@ void Segment::render() const {
     glUniform3f(objectColorLoc, m_color[0], m_color[1], m_color[2]);
 
     // Calculate relevant vertical axes.
-//    glm::vec3 x_axis = glm::vec3(1.0f, 0.0f, 0.0f);
-//    glm::vec3 y_axis = glm::vec3(0.0f, 1.0f, 0.0f);
+    //    glm::vec3 x_axis = glm::vec3(1.0f, 0.0f, 0.0f);
+    //    glm::vec3 y_axis = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::vec3 z_axis = glm::vec3(0.0f, 0.0f, 1.0f);
 
     // Compute model matrix
     glm::mat4 translated_matrix = glm::translate(glm::mat4(), m_pos);
-    glm::mat4 rotated_matrix = glm::rotate(translated_matrix,
-        m_rotation_angle * glm::pi<float>() / 180.0f, z_axis);
-    glm::mat4 shifted_matrix = glm::translate(
-        rotated_matrix, glm::vec3(0.0f, m_height / 2.0f, 0.0f));
-    glm::mat4 output_matrix = glm::scale(
-        shifted_matrix, glm::vec3(m_radius, m_height, m_radius));
+    glm::mat4 rotated_matrix =
+        glm::rotate(translated_matrix,
+                    m_rotation_angle * glm::pi<float>() / 180.0f, z_axis);
+    glm::mat4 shifted_matrix =
+        glm::translate(rotated_matrix, glm::vec3(0.0f, m_height / 2.0f, 0.0f));
+    glm::mat4 output_matrix =
+        glm::scale(shifted_matrix, glm::vec3(m_radius, m_height, m_radius));
 
     // Get the locations of uniforms for the shader.
     GLint modelLoc = glGetUniformLocation(m_shader->Program, "model");
