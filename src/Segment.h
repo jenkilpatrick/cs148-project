@@ -40,6 +40,9 @@ class Segment : public Entity {
       branch_position[1] +=
           height * sin(glm::radians<float>(90.0 + rotation_angle));
       m_children.push_back(new Segment(m_shader, radius / 2.0, branch_position,
+                                   height / 2.0, rotation_angle, color,
+                                   resource_manager, num_iterations - 1));
+      m_children.push_back(new Segment(m_shader, radius / 2.0, branch_position,
                                    height / 2.0, rotation_angle + 30.0f, color,
                                    resource_manager, num_iterations - 1));
       m_children.push_back(new Segment(m_shader, radius / 2.0, branch_position,
