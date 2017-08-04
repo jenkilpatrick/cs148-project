@@ -50,7 +50,7 @@ void World::render() const {
 
   // Draw ALL the things!
   for (size_t i = 0; i < m_entities.size(); i++) {
-    Entity *curr = m_entities.at(i);
+    Entity* curr = m_entities.at(i);
     if (curr) curr->render();
   }
 
@@ -70,7 +70,7 @@ void World::update(double time_since_last_update) {
     }
   */
   for (size_t i = 0; i < m_entities.size(); i++) {
-    Entity *curr = m_entities.at(i);
+    Entity* curr = m_entities.at(i);
 
     if (!curr) continue;
 
@@ -79,7 +79,7 @@ void World::update(double time_since_last_update) {
   }
 }
 
-void World::addEntity(Entity *entity) { m_entities.push_back(entity); }
+void World::addEntity(Entity* entity) { m_entities.push_back(entity); }
 
 // void togglePause() { m_is_paused = !m_is_paused; }
 
@@ -121,7 +121,7 @@ void fireFireworks() {
 }
 */
 
-void World::handleCollisions(Entity *entity) {
+void World::handleCollisions(Entity* entity) {
   // The state engine might do things here like handle
   // physical collisions between the world's entities
 }
