@@ -50,15 +50,47 @@ void Segment::render() const {
 
 void Segment::update(double time_since_last_update) {
   if (m_params.type == LEAF) {
-    if (m_is_falling) {
-      // Update position.
-      float velocity = 1.0;
-      m_pos[1] = std::max(0.0, m_pos[1] - time_since_last_update * velocity);
-    } else {
-      // Determine whether this leaf should fall.
+    if (!m_color_change_began) {
+      // Determine whether this leaf should start to change color.
       double random_number = glm::linearRand<double>(0.0, 1.0);
-      if (random_number < 0.0005) {
-        m_is_falling = true;
+      if (random_number < 0.005) {
+        m_color_change_began = true;
+      }
+    } else {
+      // Update color
+      m_time_since_color_change += time_since_last_update;
+
+      if (m_time_since_color_change < 2.0) {
+        // Interpolate between green and yellow.
+        m_color = glm::mix(m_changing_colors[0], m_changing_colors[1],
+                           m_time_since_color_change / 2.0);
+      } else if (m_time_since_color_change < 4.0) {
+        // Interpolate between yellow and orange.
+        m_color = glm::mix(m_changing_colors[1], m_changing_colors[2],
+                           (m_time_since_color_change - 2.0) / 2.0);
+      } else if (m_time_since_color_change < 6.0) {
+        // Interpolate between orange and red.
+        m_color = glm::mix(m_changing_colors[2], m_changing_colors[3],
+                           (m_time_since_color_change - 4.0) / 2.0);
+      } else if (m_time_since_color_change < 8.0) {
+        // Interpolate between red and brown.
+        m_color = glm::mix(m_changing_colors[3], m_changing_colors[4],
+                           (m_time_since_color_change - 6.0) / 2.0);
+      } else {
+        m_color = m_changing_colors[4];
+
+        if (m_is_falling) {
+          // Update position.
+          float velocity = 1.0;
+          m_pos[1] =
+              std::max(0.0, m_pos[1] - time_since_last_update * velocity);
+        } else {
+          // Determine whether this leaf should fall.
+          double random_number = glm::linearRand<double>(0.0, 1.0);
+          if (random_number < 0.0005) {
+            m_is_falling = true;
+          }
+        }
       }
     }
   }

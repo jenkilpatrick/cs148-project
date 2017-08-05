@@ -50,7 +50,15 @@ class Segment : public Entity {
 
     // Leaf configuration params.
     bool generate_leaves = true;
-    glm::vec4 leaf_color = glm::vec4(30.0f, 147.0f, 45.0f, 256.0f) / 256.0f;
+    glm::vec4 leaf_color_green =
+        glm::vec4(30.0f, 147.0f, 45.0f, 256.0f) / 256.0f;
+    glm::vec4 leaf_color_yellow =
+        glm::vec4(218.0f, 165.0f, 32.0f, 256.0f) / 256.0f;
+    glm::vec4 leaf_color_orange =
+        glm::vec4(210.0f, 105.0f, 30.0f, 256.0f) / 256.0f;
+    glm::vec4 leaf_color_red = glm::vec4(165.0f, 42.0f, 42.0f, 256.0f) / 256.0f;
+    glm::vec4 leaf_color_brown =
+        glm::vec4(139.0f, 69.0f, 19.0f, 256.0f) / 256.0f;
     float leaf_height = 0.5f;
     float leaf_radius = 0.3f;
   };
@@ -64,8 +72,15 @@ class Segment : public Entity {
     m_shader = shader;
     m_params = seg_params;
     m_pos = seg_params.position;
-    m_color = (seg_params.type == LEAF) ? gen_params.leaf_color
+    m_color = (seg_params.type == LEAF) ? gen_params.leaf_color_green
                                         : gen_params.branch_color;
+
+    // TODO: Fix this setup...it's an ugly way to store these!
+    m_changing_colors[0] = gen_params.leaf_color_green;
+    m_changing_colors[1] = gen_params.leaf_color_yellow;
+    m_changing_colors[2] = gen_params.leaf_color_orange;
+    m_changing_colors[3] = gen_params.leaf_color_red;
+    m_changing_colors[4] = gen_params.leaf_color_brown;
 
     // Set this class's variables.
     m_radius = seg_params.radius;
@@ -160,7 +175,11 @@ class Segment : public Entity {
   glm::vec3 m_heading;
   SegmentResourceManager* m_resource_manager;
   std::vector<Segment*> m_children;
+
+  bool m_color_change_began = false;
+  float m_time_since_color_change = 0.0f;
   bool m_is_falling = false;
+  glm::vec4 m_changing_colors[5];
 };
 
 #endif
