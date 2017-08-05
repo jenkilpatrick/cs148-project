@@ -83,8 +83,11 @@ class Segment : public Entity {
     m_changing_colors[4] = gen_params.leaf_color_brown;
 
     // Set this class's variables.
-    m_radius = seg_params.radius;
-    m_height = seg_params.height;
+    m_radius = (seg_params.type == LEAF) ? 0.0f : seg_params.radius;
+    m_height = (seg_params.type == LEAF) ? 0.0f : seg_params.height;
+
+    m_goal_radius = seg_params.radius;
+    m_goal_height = seg_params.height;
     m_heading = glm::normalize(seg_params.heading);
     m_resource_manager = resource_manager;
 
@@ -172,12 +175,20 @@ class Segment : public Entity {
   SegmentParams m_params;
   float m_radius;
   float m_height;
+
+  float m_goal_radius;
+  float m_goal_height;
+
   glm::vec3 m_heading;
   SegmentResourceManager* m_resource_manager;
   std::vector<Segment*> m_children;
 
+  bool m_growth_began = false;
+  float m_time_since_growth = 0.0f;
+
   bool m_color_change_began = false;
   float m_time_since_color_change = 0.0f;
+
   bool m_is_falling = false;
   glm::vec4 m_changing_colors[5];
 };
