@@ -127,11 +127,14 @@ World* createWorld(GLFWwindow* window) {
   // Create the world.
   World* world = new World(window);
 
-  glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
   SegmentResourceManager* segment_resource_manager =
       new SegmentResourceManager();
-  world->addEntity(
-      new Tree(world->m_shader, position, segment_resource_manager));
+
+  world->addEntity(new Tree(world->m_shader, glm::vec3(0.0f, 0.0f, 0.0f),
+      5.0, segment_resource_manager));
+
+//  world->addEntity(new Tree(world->m_shader, glm::vec3(5.0f, 0.0f, 5.0f),
+//      2.0, segment_resource_manager));
 
   world->addEntity(new Light(world->m_shader, glm::vec3(0.0f, 0.0f, 9.0f)));
   world->addEntity(new Light(world->m_shader, glm::vec3(-9.0f, 0.0f, 9.0f)));

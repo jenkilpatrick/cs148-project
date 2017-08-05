@@ -16,18 +16,21 @@
 
 class Tree : public Entity {
  public:
-  Tree(Shader* shader, glm::vec3 position,
+  Tree(Shader* shader, glm::vec3 position, float height,
        SegmentResourceManager* segment_resource_manager) {
     m_type = ET_TREE;
 
     m_shader = shader;
     m_pos = position;
 
-    Segment::SegmentParams segParams;
-    Segment::GenerationParams genParams;
+    Segment::SegmentParams seg_params;
+    seg_params.position = position;
+    seg_params.height = height;
+    seg_params.radius = height / 20.0;
+    Segment::GenerationParams gen_params;
 
     m_trunk =
-        new Segment(m_shader, segment_resource_manager, segParams, genParams);
+        new Segment(m_shader, segment_resource_manager, seg_params, gen_params);
   }
 
   ~Tree() { delete m_trunk; }
