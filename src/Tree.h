@@ -25,7 +25,9 @@ class Tree : public Entity {
 
     Segment::SegmentParams segParams;
     Segment::GenerationParams genParams;
-    m_trunk = new Segment(m_shader, segment_resource_manager, segParams, genParams);
+
+    m_trunk =
+        new Segment(m_shader, segment_resource_manager, segParams, genParams);
   }
 
   ~Tree() { delete m_trunk; }

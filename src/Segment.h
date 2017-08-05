@@ -56,56 +56,57 @@ class Segment : public Entity {
   };
 
   Segment(Shader* shader, SegmentResourceManager* resource_manager,
-          SegmentParams& segParams, GenerationParams& genParams) {
+          SegmentParams& seg_params, GenerationParams& gen_params) {
     m_type = ET_SEGMENT;
 
     // TODO: Replace with parent constructor?
     // Set parent class's variables.
     m_shader = shader;
-    m_pos = segParams.position;
-    m_color = (segParams.type == LEAF) ? genParams.leaf_color
-                                       : genParams.branch_color;
+    m_params = seg_params;
+    m_pos = seg_params.position;
+    m_color = (seg_params.type == LEAF) ? gen_params.leaf_color
+                                        : gen_params.branch_color;
 
     // Set this class's variables.
-    m_radius = segParams.radius;
-    m_height = segParams.height;
-    m_heading = glm::normalize(segParams.heading);
+    m_radius = seg_params.radius;
+    m_height = seg_params.height;
+    m_heading = glm::normalize(seg_params.heading);
     m_resource_manager = resource_manager;
 
-    if (segParams.level > genParams.max_levels) {
+    if (seg_params.level >= gen_params.max_levels) {
       return;
     }
 
-    if (segParams.level == genParams.max_levels) {
+    if (seg_params.level == gen_params.max_levels - 1) {
       // Spawn a leaf.
-      glm::vec3 branch_position = m_pos + m_height * segParams.heading;
-      SegmentParams child = segParams;
+      glm::vec3 branch_position = m_pos + m_height * seg_params.heading;
+      SegmentParams child = seg_params;
       child.type = LEAF;
-      child.radius = genParams.leaf_radius;
-      child.height = genParams.leaf_height;
+      child.radius = gen_params.leaf_radius;
+      child.height = gen_params.leaf_height;
       child.position = branch_position;
       child.level += 1;
       m_children.push_back(
-          new Segment(m_shader, resource_manager, child, genParams));
+          new Segment(m_shader, resource_manager, child, gen_params));
       return;
     }
 
-    glm::vec3 branch_position = m_pos + m_height * segParams.heading;
+    glm::vec3 branch_position = m_pos + m_height * seg_params.heading;
 
-    if (genParams.generate_straight_segment) {
-      SegmentParams child = segParams;
-      child.radius *= genParams.width_contraction_ratio;
+    if (gen_params.generate_straight_segment) {
+      SegmentParams child = seg_params;
+      child.radius *= gen_params.width_contraction_ratio;
       child.height *= (child.type == TRUNK)
-                          ? genParams.trunk_contraction_ratio
-                          : genParams.branch_contraction_ratio;
+                          ? gen_params.trunk_contraction_ratio
+                          : gen_params.branch_contraction_ratio;
       child.position = branch_position;
       child.level += 1;
       m_children.push_back(
-          new Segment(m_shader, resource_manager, child, genParams));
+          new Segment(m_shader, resource_manager, child, gen_params));
     }
 
-    for (int i = 0; i < genParams.num_branches; i++) {
-      SegmentParams child = segParams;
+    for (int i = 0; i < gen_params.num_branches; i++) {
+      SegmentParams child = seg_params;
       child.radius *= 0.5f;
       child.height *= 0.5f;
       child.position = branch_position;
@@ -113,33 +114,33 @@ class Segment : public Entity {
       child.type = BRANCH;
 
       glm::vec3 rotation_axis;
-      if (segParams.type == TRUNK) {
+      if (seg_params.type == TRUNK) {
         // TODO: Fix this to support arbitrary trunk headings.
         glm::vec3 rotation_axis = glm::vec3(0.0f, 0.0f, -1.0f);
-        child.heading = glm::rotate(segParams.heading,
-                                    genParams.branching_angle, rotation_axis);
+        child.heading = glm::rotate(seg_params.heading,
+                                    gen_params.branching_angle, rotation_axis);
 
         // If this is a branch coming off the main trunk, rotate about the
         // trunk
         // by the divergence angle.
         float divergence_angle = glm::radians(fmod(
-            genParams.divergence_angle * genParams.num_trunk_segments_created,
+            gen_params.divergence_angle * gen_params.num_trunk_segments_created,
             360.0f));
-        genParams.num_trunk_segments_created++;
+        gen_params.num_trunk_segments_created++;
         child.heading =
-            glm::rotate(child.heading, divergence_angle, segParams.heading);
+            glm::rotate(child.heading, divergence_angle, seg_params.heading);
       } else {
         glm::vec3 V = glm::vec3(0.0f, 1.0f, 0.0f);
-        glm::vec3 L = glm::normalize(glm::cross(V, segParams.heading));
-        glm::vec3 U = glm::normalize(glm::cross(segParams.heading, L));
+        glm::vec3 L = glm::normalize(glm::cross(V, seg_params.heading));
+        glm::vec3 U = glm::normalize(glm::cross(seg_params.heading, L));
 
         float branching_angle = glm::radians(((i % 2) == 0 ? 1.0f : -1.0f) *
-                                             genParams.branching_angle);
-        child.heading = glm::rotate(segParams.heading, branching_angle, U);
+                                             gen_params.branching_angle);
+        child.heading = glm::rotate(seg_params.heading, branching_angle, U);
       }
 
       m_children.push_back(
-          new Segment(m_shader, resource_manager, child, genParams));
+          new Segment(m_shader, resource_manager, child, gen_params));
     }
   }
 
@@ -153,11 +154,13 @@ class Segment : public Entity {
   void update(double time_since_last_update);
 
  private:
+  SegmentParams m_params;
   float m_radius;
   float m_height;
   glm::vec3 m_heading;
   SegmentResourceManager* m_resource_manager;
   std::vector<Segment*> m_children;
+  bool m_is_falling = false;
 };
 
 #endif

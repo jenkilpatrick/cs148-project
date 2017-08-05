@@ -49,6 +49,20 @@ void Segment::render() const {
 }
 
 void Segment::update(double time_since_last_update) {
+  if (m_params.type == LEAF) {
+    if (m_is_falling) {
+      // Update position.
+      float velocity = 1.0;
+      m_pos[1] = std::max(0.0, m_pos[1] - time_since_last_update * velocity);
+    } else {
+      // Determine whether this leaf should fall.
+      double random_number = glm::linearRand<double>(0.0, 1.0);
+      if (random_number < 0.0005) {
+        m_is_falling = true;
+      }
+    }
+  }
+
   for (Segment* child : m_children) {
     if (child) child->update(time_since_last_update);
   }
