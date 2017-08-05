@@ -16,9 +16,16 @@
 
 class Segment : public Entity {
  public:
+enum Type {
+  TRUNK,
+  BRANCH,
+  LEAF
+};
+
 // Configuration parameters specific to this Segment.
 struct SegmentParams {
   int level = 0;
+  Type type = TRUNK;
   float radius = 0.5;
   float height = 5.0f;
   glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -28,10 +35,13 @@ struct SegmentParams {
 
 // Configuration parameters for generating new Segments.
 struct GenerationParams {
-  int max_levels = 2;
+  int max_levels = 5;
   bool generate_straight_segment = true;
   int num_branches = 2;
-  float divergence_angle = 60.0f;
+  float branching_angle = 45.0f;
+  float trunk_contraction_ratio = 0.9;
+  float branch_contraction_ratio = 0.6;
+  float width_contraction_ratio = 0.707;
 };
 
   Segment(Shader* shader, SegmentResourceManager* resource_manager,
@@ -59,8 +69,9 @@ struct GenerationParams {
 
       if (genParams.generate_straight_segment) {
         SegmentParams child = segParams;
-        child.radius *= 0.5f;
-        child.height *= 0.5f;
+        child.radius *= genParams.width_contraction_ratio;
+        child.height *= (child.type == TRUNK) ? genParams.trunk_contraction_ratio
+            : genParams.branch_contraction_ratio;
         child.position = branch_position;
         child.level += 1;
         m_children.push_back(
@@ -73,8 +84,9 @@ struct GenerationParams {
         child.height *= 0.5f;
         child.position = branch_position;
         child.level += 1;
+        child.type = BRANCH;
         child.rotation_angle +=
-            ((i % 2) == 0 ? 1.0f : -1.0f) * genParams.divergence_angle;
+            ((i % 2) == 0 ? 1.0f : -1.0f) * genParams.branching_angle;
         m_children.push_back(
             new Segment(m_shader, resource_manager, child, genParams));
       }

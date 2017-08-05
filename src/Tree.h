@@ -23,12 +23,6 @@ class Tree : public Entity {
     m_shader = shader;
     m_pos = position;
 
-    // Add objects to the world.
-//    float radius = 1.0f;
-//    float height = 5.0f;
-//    float rotation_angle = 0.0f;
-//    glm::vec4 color = glm::vec4(205.0f, 133.0f, 63.0f, 256.0f) / 256.0f;
-
     Segment::SegmentParams segParams;
     Segment::GenerationParams genParams;
     m_trunk = new Segment(m_shader, segment_resource_manager, segParams, genParams);
