@@ -1,5 +1,4 @@
 // From hws/hw2/Firework.h
-// TODO: Create h and cpp file
 
 #ifndef SEGMENT_H
 #define SEGMENT_H
@@ -14,40 +13,71 @@
 // Class : Segment
 //===========================================================
 
+
 class Segment : public Entity {
  public:
-  Segment(Shader* shader, float radius, glm::vec3 position, float height,
-          float rotation_angle, glm::vec4 color,
-          SegmentResourceManager* resource_manager, int num_iterations) {
+// Configuration parameters specific to this Segment.
+struct SegmentParams {
+  int level = 0;
+  float radius = 0.5;
+  float height = 5.0f;
+  glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+  float rotation_angle = 0.0f;
+  glm::vec4 color = glm::vec4(205.0f, 133.0f, 63.0f, 256.0f) / 256.0f;
+};
+
+// Configuration parameters for generating new Segments.
+struct GenerationParams {
+  int max_levels = 2;
+  bool generate_straight_segment = true;
+  int num_branches = 2;
+  float divergence_angle = 60.0f;
+};
+
+  Segment(Shader* shader, SegmentResourceManager* resource_manager,
+      SegmentParams& segParams, GenerationParams& genParams) {
     m_type = ET_SEGMENT;
 
     // TODO: Replace with parent constructor?
     // Set parent class's variables.
     m_shader = shader;
-    m_pos = position;
-    m_color = color;
+    m_pos = segParams.position;
+    m_color = segParams.color;
 
     // Set this class's variables.
-    m_radius = radius;
-    m_height = height;
-    m_rotation_angle = rotation_angle;
+    m_radius = segParams.radius;
+    m_height = segParams.height;
+    m_rotation_angle = segParams.rotation_angle;
     m_resource_manager = resource_manager;
 
-    if (num_iterations > 0) {
-      glm::vec3 branch_position = position;
+    if (segParams.level < genParams.max_levels) {
+      glm::vec3 branch_position = m_pos;
       branch_position[0] +=
-          height * cos(glm::radians<float>(90.0 + rotation_angle));
+          m_height * cos(glm::radians<float>(90.0 + m_rotation_angle));
       branch_position[1] +=
-          height * sin(glm::radians<float>(90.0 + rotation_angle));
-      m_children.push_back(new Segment(m_shader, radius / 2.0, branch_position,
-                                   height / 2.0, rotation_angle, color,
-                                   resource_manager, num_iterations - 1));
-      m_children.push_back(new Segment(m_shader, radius / 2.0, branch_position,
-                                   height / 2.0, rotation_angle + 30.0f, color,
-                                   resource_manager, num_iterations - 1));
-      m_children.push_back(new Segment(m_shader, radius / 2.0, branch_position,
-                                    height / 2.0, rotation_angle - 30.0f, color,
-                                    resource_manager, num_iterations - 1));
+          m_height * sin(glm::radians<float>(90.0 + m_rotation_angle));
+
+      if (genParams.generate_straight_segment) {
+        SegmentParams child = segParams;
+        child.radius *= 0.5f;
+        child.height *= 0.5f;
+        child.position = branch_position;
+        child.level += 1;
+        m_children.push_back(
+            new Segment(m_shader, resource_manager, child, genParams));
+      }
+
+      for (int i = 0; i < genParams.num_branches; i++) {
+        SegmentParams child = segParams;
+        child.radius *= 0.5f;
+        child.height *= 0.5f;
+        child.position = branch_position;
+        child.level += 1;
+        child.rotation_angle +=
+            ((i % 2) == 0 ? 1.0f : -1.0f) * genParams.divergence_angle;
+        m_children.push_back(
+            new Segment(m_shader, resource_manager, child, genParams));
+      }
     }
   }
 
