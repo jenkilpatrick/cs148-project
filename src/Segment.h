@@ -5,6 +5,9 @@
 
 #include <vector>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/rotate_vector.hpp>
+
 #include "Entity.h"
 #include "SegmentResourceManager.h"
 #include "Shader.h"
@@ -13,39 +16,36 @@
 // Class : Segment
 //===========================================================
 
-
 class Segment : public Entity {
  public:
-enum Type {
-  TRUNK,
-  BRANCH,
-  LEAF
-};
+  enum Type { TRUNK, BRANCH, LEAF };
 
-// Configuration parameters specific to this Segment.
-struct SegmentParams {
-  int level = 0;
-  Type type = TRUNK;
-  float radius = 0.5;
-  float height = 5.0f;
-  glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
-  float rotation_angle = 0.0f;
-  glm::vec4 color = glm::vec4(205.0f, 133.0f, 63.0f, 256.0f) / 256.0f;
-};
+  // Configuration parameters specific to this Segment.
+  struct SegmentParams {
+    int level = 0;
+    Type type = TRUNK;
+    float radius = 0.25;
+    float height = 5.0f;
+    glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 heading = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec4 color = glm::vec4(205.0f, 133.0f, 63.0f, 256.0f) / 256.0f;
+  };
 
-// Configuration parameters for generating new Segments.
-struct GenerationParams {
-  int max_levels = 5;
-  bool generate_straight_segment = true;
-  int num_branches = 2;
-  float branching_angle = 45.0f;
-  float trunk_contraction_ratio = 0.9;
-  float branch_contraction_ratio = 0.6;
-  float width_contraction_ratio = 0.707;
-};
+  // Configuration parameters for generating new Segments.
+  struct GenerationParams {
+    int max_levels = 7;
+    bool generate_straight_segment = true;
+    int num_branches = 2;
+    float branching_angle = 45.0f;
+    float trunk_contraction_ratio = 0.9f;
+    float branch_contraction_ratio = 0.6f;
+    float width_contraction_ratio = 0.707f;
+    float divergence_angle = 137.5f;
+    int num_trunk_segments_created = 0;
+  };
 
   Segment(Shader* shader, SegmentResourceManager* resource_manager,
-      SegmentParams& segParams, GenerationParams& genParams) {
+          SegmentParams& segParams, GenerationParams& genParams) {
     m_type = ET_SEGMENT;
 
     // TODO: Replace with parent constructor?
@@ -57,21 +57,18 @@ struct GenerationParams {
     // Set this class's variables.
     m_radius = segParams.radius;
     m_height = segParams.height;
-    m_rotation_angle = segParams.rotation_angle;
+    m_heading = glm::normalize(segParams.heading);
     m_resource_manager = resource_manager;
 
     if (segParams.level < genParams.max_levels) {
-      glm::vec3 branch_position = m_pos;
-      branch_position[0] +=
-          m_height * cos(glm::radians<float>(90.0 + m_rotation_angle));
-      branch_position[1] +=
-          m_height * sin(glm::radians<float>(90.0 + m_rotation_angle));
+      glm::vec3 branch_position = m_pos + m_height * segParams.heading;
 
       if (genParams.generate_straight_segment) {
         SegmentParams child = segParams;
         child.radius *= genParams.width_contraction_ratio;
-        child.height *= (child.type == TRUNK) ? genParams.trunk_contraction_ratio
-            : genParams.branch_contraction_ratio;
+        child.height *= (child.type == TRUNK)
+                            ? genParams.trunk_contraction_ratio
+                            : genParams.branch_contraction_ratio;
         child.position = branch_position;
         child.level += 1;
         m_children.push_back(
@@ -85,8 +82,33 @@ struct GenerationParams {
         child.position = branch_position;
         child.level += 1;
         child.type = BRANCH;
-        child.rotation_angle +=
-            ((i % 2) == 0 ? 1.0f : -1.0f) * genParams.branching_angle;
+
+        glm::vec3 rotation_axis;
+        if (segParams.type == TRUNK) {
+          // TODO: Fix this to support arbitrary trunk headings.
+          glm::vec3 rotation_axis = glm::vec3(0.0f, 0.0f, -1.0f);
+          child.heading = glm::rotate(segParams.heading,
+                                      genParams.branching_angle, rotation_axis);
+
+          // If this is a branch coming off the main trunk, rotate about the
+          // trunk
+          // by the divergence angle.
+          float divergence_angle = glm::radians(fmod(
+              genParams.divergence_angle * genParams.num_trunk_segments_created,
+              360.0f));
+          genParams.num_trunk_segments_created++;
+          child.heading =
+              glm::rotate(child.heading, divergence_angle, segParams.heading);
+        } else {
+          glm::vec3 V = glm::vec3(0.0f, 1.0f, 0.0f);
+          glm::vec3 L = glm::normalize(glm::cross(V, segParams.heading));
+          glm::vec3 U = glm::normalize(glm::cross(segParams.heading, L));
+
+          float branching_angle = glm::radians(((i % 2) == 0 ? 1.0f : -1.0f) *
+                                               genParams.branching_angle);
+          child.heading = glm::rotate(segParams.heading, branching_angle, U);
+        }
+
         m_children.push_back(
             new Segment(m_shader, resource_manager, child, genParams));
       }
@@ -94,7 +116,7 @@ struct GenerationParams {
   }
 
   ~Segment() {
-    for (Segment * child : m_children) {
+    for (Segment* child : m_children) {
       if (child) delete child;
     }
   }
@@ -105,7 +127,7 @@ struct GenerationParams {
  private:
   float m_radius;
   float m_height;
-  float m_rotation_angle;
+  glm::vec3 m_heading;
   SegmentResourceManager* m_resource_manager;
   std::vector<Segment*> m_children;
 };
