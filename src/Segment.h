@@ -19,6 +19,18 @@
 class Segment : public Entity {
  public:
   enum Type { TRUNK, BRANCH, LEAF };
+  enum Phase {
+    NOT_STARTED,
+    GROWING,
+    GREEN,
+    FADE_YELLOW,
+    FADE_ORANGE,
+    FADE_RED,
+    FADE_BROWN,
+    BROWN,
+    FALLING,
+    FALLEN
+  };
 
   // Configuration parameters specific to this Segment.
   struct SegmentParams {
@@ -56,7 +68,8 @@ class Segment : public Entity {
         glm::vec4(218.0f, 165.0f, 32.0f, 256.0f) / 256.0f;
     glm::vec4 leaf_color_orange =
         glm::vec4(210.0f, 105.0f, 30.0f, 256.0f) / 256.0f;
-    glm::vec4 leaf_color_red = glm::vec4(165.0f, 42.0f, 42.0f, 256.0f) / 256.0f;
+    //glm::vec4 leaf_color_red = glm::vec4(165.0f, 42.0f, 42.0f, 256.0f) / 256.0f;
+    glm::vec4 leaf_color_red = glm::vec4(218.0f, 17.0f, 0.0f, 256.0f) / 256.0f;
     glm::vec4 leaf_color_brown =
         glm::vec4(139.0f, 69.0f, 19.0f, 256.0f) / 256.0f;
     float leaf_height = 0.5f;
@@ -183,14 +196,10 @@ class Segment : public Entity {
   SegmentResourceManager* m_resource_manager;
   std::vector<Segment*> m_children;
 
-  bool m_growth_began = false;
-  float m_time_since_growth = 0.0f;
-
-  bool m_color_change_began = false;
-  float m_time_since_color_change = 0.0f;
-
-  bool m_is_falling = false;
   glm::vec4 m_changing_colors[5];
+
+  Phase m_phase = NOT_STARTED;
+  float m_time_in_phase = 0.0f;
 };
 
 #endif

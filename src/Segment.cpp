@@ -50,62 +50,97 @@ void Segment::render() const {
 
 void Segment::update(double time_since_last_update) {
   if (m_params.type == LEAF) {
-    if (!m_growth_began) {
-      // Determine whether this leaf should start to grow.
-      double random_number = glm::linearRand<double>(0.0, 1.0);
-      if (random_number < 0.005) {
-        m_growth_began = true;
-      }
-    } else {
-      if (m_height < m_goal_height) {
-        m_time_since_growth += time_since_last_update;
-        m_height = m_goal_height * m_time_since_growth / 5.0f;
-        m_radius = m_goal_radius * m_time_since_growth / 5.0f;
-      } else {
-        if (!m_color_change_began) {
+    double phase_length = 2.0;
+    float fall_velocity = 1.0;
+
+    if (m_phase != FALLEN) {
+      m_time_in_phase += time_since_last_update;
+    }
+    switch (m_phase) {
+      case NOT_STARTED:
+        // Determine whether this leaf should start to grow.
+        if (glm::linearRand<double>(0.0, 1.0) < 0.003) {
+          m_phase = GROWING;
+          m_time_in_phase = 0.0f;
+        }
+        break;
+      case GROWING:
+        m_height = m_goal_height * m_time_in_phase / 3.0f;
+        m_radius = m_goal_radius * m_time_in_phase / 3.0f;
+        if (m_height >= m_goal_height) {
+          m_phase = GREEN;
+          m_time_in_phase = 0.0f;
+        }
+        break;
+      case GREEN:
+        if (m_time_in_phase > 7.0) {
           // Determine whether this leaf should start to change color.
-          double random_number = glm::linearRand<double>(0.0, 1.0);
-          if (random_number < 0.005) {
-            m_color_change_began = true;
-          }
-        } else {
-          // Update color
-          m_time_since_color_change += time_since_last_update;
-
-          if (m_time_since_color_change < 2.0) {
-            // Interpolate between green and yellow.
-            m_color = glm::mix(m_changing_colors[0], m_changing_colors[1],
-                               m_time_since_color_change / 2.0);
-          } else if (m_time_since_color_change < 4.0) {
-            // Interpolate between yellow and orange.
-            m_color = glm::mix(m_changing_colors[1], m_changing_colors[2],
-                               (m_time_since_color_change - 2.0) / 2.0);
-          } else if (m_time_since_color_change < 6.0) {
-            // Interpolate between orange and red.
-            m_color = glm::mix(m_changing_colors[2], m_changing_colors[3],
-                               (m_time_since_color_change - 4.0) / 2.0);
-          } else if (m_time_since_color_change < 8.0) {
-            // Interpolate between red and brown.
-            m_color = glm::mix(m_changing_colors[3], m_changing_colors[4],
-                               (m_time_since_color_change - 6.0) / 2.0);
-          } else {
-            m_color = m_changing_colors[4];
-
-            if (m_is_falling) {
-              // Update position.
-              float velocity = 1.0;
-              m_pos[1] =
-                  std::max(0.0, m_pos[1] - time_since_last_update * velocity);
-            } else {
-              // Determine whether this leaf should fall.
-              double random_number = glm::linearRand<double>(0.0, 1.0);
-              if (random_number < 0.0005) {
-                m_is_falling = true;
-              }
-            }
+          if (m_time_in_phase > 15.0 ||
+              glm::linearRand<double>(0.0, 1.0) < 0.005) {
+            m_phase = FADE_YELLOW;
+            m_time_in_phase = 0.0f;
           }
         }
-      }
+        break;
+      case FADE_YELLOW:
+        // Interpolate between green and yellow.
+        m_color = glm::mix(m_changing_colors[0], m_changing_colors[1],
+                           std::min(1.0, m_time_in_phase / phase_length));
+        if (m_time_in_phase > phase_length + 1.0) {
+          m_phase = FADE_ORANGE;
+          m_time_in_phase = 0.0f;
+        }
+        break;
+      case FADE_ORANGE:
+        // Interpolate between yellow and orange.
+        m_color = glm::mix(m_changing_colors[1], m_changing_colors[2],
+                           std::min(1.0, m_time_in_phase / phase_length));
+        if (m_time_in_phase > phase_length + 1.0) {
+          m_phase = FADE_RED;
+          m_time_in_phase = 0.0f;
+        }
+        break;
+      case FADE_RED:
+        // Interpolate between orange and red.
+        m_color = glm::mix(m_changing_colors[2], m_changing_colors[3],
+                           std::min(1.0, m_time_in_phase / phase_length));
+        if (m_time_in_phase > phase_length + 1.0) {
+          m_phase = FADE_BROWN;
+          m_time_in_phase = 0.0f;
+        }
+        break;
+      case FADE_BROWN:
+        // Interpolate between red and brown.
+        m_color = glm::mix(m_changing_colors[3], m_changing_colors[4],
+                           std::min(1.0, m_time_in_phase / phase_length));
+        if (m_time_in_phase > phase_length + 1.0) {
+          m_phase = BROWN;
+          m_time_in_phase = 0.0f;
+        }
+        break;
+      case BROWN:
+        if (m_time_in_phase > 5.0) {
+          // Determine whether this leaf should fall.
+          if (glm::linearRand<double>(0.0, 1.0) < 0.0005) {
+            m_phase = FALLING;
+            m_time_in_phase = 0.0f;
+          }
+        }
+        break;
+      case FALLING:
+        // Update position.
+        m_pos[1] =
+            std::max(0.0, m_pos[1] - time_since_last_update * fall_velocity);
+        if (m_pos[1] <= 0.0) {
+          m_phase = FALLEN;
+          m_time_in_phase = 0.0f;
+        }
+        break;
+      case FALLEN:
+        // Do nothing.
+        break;
+      default:
+        break;
     }
   }
 
