@@ -35,7 +35,7 @@ class World {
     m_shader = new Shader("/home/jen/Code/cs148/cs148-project/bin/phong.vs",
                           "/home/jen/Code/cs148/cs148-project/bin/phong.frag");
 #endif
-    m_camera = new Camera(glm::vec3(0.0f, 0.0f, 14.0f));
+    m_camera = new Camera(glm::vec3(0.0f, 12.0f, 23.0f));
   }
 
   ~World() {
