@@ -21,6 +21,7 @@
 #include "Light.h"
 #include "Segment.h"
 #include "SegmentResourceManager.h"
+#include "Skybox.h"
 #include "Tree.h"
 #include "World.h"
 
@@ -136,8 +137,10 @@ World* createWorld(GLFWwindow* window) {
 //  world->addEntity(new Tree(world->m_shader, glm::vec3(5.0f, 0.0f, 5.0f),
 //      2.0, segment_resource_manager));
 
-  world->addEntity(new Light(world->m_shader, glm::vec3(0.0f, 0.0f, 9.0f)));
-  world->addEntity(new Light(world->m_shader, glm::vec3(-9.0f, 0.0f, 9.0f)));
+  world->addEntity(new Light(world->m_shader, glm::vec3(0.0f, 9.0f, 9.0f)));
+  world->addEntity(new Light(world->m_shader, glm::vec3(-9.0f, 9.0f, 9.0f)));
+
+  world->addEntity(new Skybox(world->m_shader));
 
   return world;
 }
