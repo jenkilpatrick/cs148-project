@@ -68,7 +68,8 @@ class Segment : public Entity {
         glm::vec4(218.0f, 165.0f, 32.0f, 256.0f) / 256.0f;
     glm::vec4 leaf_color_orange =
         glm::vec4(210.0f, 105.0f, 30.0f, 256.0f) / 256.0f;
-    //glm::vec4 leaf_color_red = glm::vec4(165.0f, 42.0f, 42.0f, 256.0f) / 256.0f;
+    // glm::vec4 leaf_color_red = glm::vec4(165.0f, 42.0f, 42.0f, 256.0f) /
+    // 256.0f;
     glm::vec4 leaf_color_red = glm::vec4(218.0f, 17.0f, 0.0f, 256.0f) / 256.0f;
     glm::vec4 leaf_color_brown =
         glm::vec4(139.0f, 69.0f, 19.0f, 256.0f) / 256.0f;

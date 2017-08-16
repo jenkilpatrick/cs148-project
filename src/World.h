@@ -34,6 +34,9 @@ class World {
 #else
     m_shader = new Shader("/home/jen/Code/cs148/cs148-project/bin/phong.vs",
                           "/home/jen/Code/cs148/cs148-project/bin/phong.frag");
+    m_skybox_shader = new Shader(
+                          "/home/jen/Code/cs148/cs148-project/bin/skybox.vs",
+                          "/home/jen/Code/cs148/cs148-project/bin/skybox.frag");
 #endif
     m_camera = new Camera(glm::vec3(0.0f, 12.0f, 23.0f));
   }
@@ -45,6 +48,7 @@ class World {
     }
 
     if (m_shader) delete m_shader;
+    if (m_skybox_shader) delete m_skybox_shader;
     if (m_camera) delete m_camera;
   }
 
@@ -53,6 +57,7 @@ class World {
   void update(double time_since_last_update);
 
   Shader* m_shader;
+  Shader* m_skybox_shader;
   Camera* m_camera;
 
  private:

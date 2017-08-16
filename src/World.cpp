@@ -48,6 +48,18 @@ void World::render() const {
   glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
   glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
+  // Set the appropriate shader view and projection matrices for the skybox.
+/*
+  m_skybox_shader->Use();
+  glm::mat4 skybox_view = glm::mat4(glm::mat3(m_camera->GetViewMatrix()));
+  GLint skybox_view_loc =
+      glGetUniformLocation(m_skybox_shader->Program, "view");
+  GLint skybox_proj_loc =
+      glGetUniformLocation(m_skybox_shader->Program, "projection");
+  glUniformMatrix4fv(skybox_view_loc, 1, GL_FALSE, glm::value_ptr(skybox_view));
+  glUniformMatrix4fv(skybox_proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
+*/
+
   // Draw ALL the things!
   for (size_t i = 0; i < m_entities.size(); i++) {
     Entity* curr = m_entities.at(i);

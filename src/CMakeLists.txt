@@ -19,6 +19,7 @@ SET(project_SRCS
         main.cpp
         Segment.cpp
         Skybox.cpp
+        stb_image.cpp
         Tree.cpp
         World.cpp
 )
