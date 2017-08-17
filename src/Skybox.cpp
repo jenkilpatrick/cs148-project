@@ -9,6 +9,7 @@ void Skybox::render() const {
   glfwGetFramebufferSize(m_window, &w, &h);
 
   // Set view matrix.
+//  glm::mat4 view = m_camera->GetViewMatrix();
   glm::mat4 view = glm::mat4(glm::mat3(m_camera->GetViewMatrix()));
   GLint view_loc = glGetUniformLocation(m_shader->Program, "view");
   glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));

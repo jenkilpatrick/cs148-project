@@ -14,13 +14,22 @@ class SkyboxResourceManager {
  public:
   SkyboxResourceManager() {
     std::vector<std::string> faces = {
- /*       "res/ely_hills/hills_rt.tga",
+/*
+        "res/ame_siege/siege_rt.tga",
+        "res/ame_siege/siege_lf.tga",
+        "res/ame_siege/siege_up.tga",
+        "res/ame_siege/siege_dn.tga",
+        "res/ame_siege/siege_bk.tga",
+        "res/ame_siege/siege_ft.tga"
+        "res/ely_hills/hills_rt.tga",
         "res/ely_hills/hills_lf.tga",
         "res/ely_hills/hills_up.tga",
         "res/ely_hills/hills_dn.tga",
         "res/ely_hills/hills_bk.tga",
         "res/ely_hills/hills_ft.tga"
-*/        "res/skybox_lake/right.jpg",
+*/
+
+        "res/skybox_lake/right.jpg",
         "res/skybox_lake/left.jpg",
         "res/skybox_lake/top.jpg",
         "res/skybox_lake/bottom.jpg",
@@ -92,15 +101,19 @@ class SkyboxResourceManager {
         -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, -1.0f,
         1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, 1.0f};
 
+    
+/*
+    for (int i = 0; i < 12*9; i++) {
+        vertices[i] *= 1000.0f;
+    }
+*/
 /*
     // First, set the container's VAO (and VBO)
-    glGenVertexArrays(1, &containerVAO);
+    glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindVertexArray(containerVAO);
+    glBindVertexArray(VAO);
 
     // Position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
@@ -113,6 +126,8 @@ class SkyboxResourceManager {
     glEnableVertexAttribArray(1);
     glBindVertexArray(0);
 */
+
+
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glBindVertexArray(VAO);

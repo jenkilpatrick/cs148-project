@@ -1,2 +1,3 @@
+ame_siege: http://www.custommapmakers.org/skyboxes/zips/ame_siege.zip
 ely_hills: http://www.custommapmakers.org/skyboxes/zips/ely_hills.zip
 skybox_lake: https://learnopengl.com/img/textures/skybox.rar
