@@ -52,6 +52,11 @@ void Segment::update(double time_since_last_update) {
   if (m_params.type == LEAF) {
     double phase_length = 2.0;
     float fall_velocity = 1.0;
+    glm::vec3 breeze_direction =
+        glm::normalize(glm::vec3(-1.0f, 0.0f, -1.0f));
+    float breeze_velocity = 0.4 + 0.3 * sin(m_time_in_phase * 2.0f);
+    glm::vec3 down = glm::vec3(0.0f, -1.0f, 0.0f);
+
 
     if (m_phase != FALLEN) {
       m_time_in_phase += time_since_last_update;
@@ -129,8 +134,19 @@ void Segment::update(double time_since_last_update) {
         break;
       case FALLING:
         // Update position.
-        m_pos[1] =
-            std::max(0.0, m_pos[1] - time_since_last_update * fall_velocity);
+        std::cout << "breeze:" << (m_breeze_enabled ? "y" : "n") << std::endl;
+        if (m_breeze_enabled) {
+          m_pos = m_pos
+               + (float) time_since_last_update * fall_velocity * down
+               + (float) time_since_last_update * breeze_velocity
+                   * breeze_direction;
+        } else {
+          m_pos[1] =
+              std::max(0.0, m_pos[1] - time_since_last_update * fall_velocity);
+        }
+
+        // Stop when the leaf hits the ground.
+        m_pos[1] = std::max(0.0f, m_pos[1]);
         if (m_pos[1] <= 0.0) {
           m_phase = FALLEN;
           m_time_in_phase = 0.0f;

@@ -100,6 +100,10 @@ class Segment : public Entity {
     m_radius = (seg_params.type == LEAF) ? 0.0f : seg_params.radius;
     m_height = (seg_params.type == LEAF) ? 0.0f : seg_params.height;
 
+// FOR TESTING BREEZES.
+//    m_radius = seg_params.radius;
+//    m_height = seg_params.height;
+
     m_goal_radius = seg_params.radius;
     m_goal_height = seg_params.height;
     m_heading = glm::normalize(seg_params.heading);
@@ -184,6 +188,12 @@ class Segment : public Entity {
 
   void render() const;
   void update(double time_since_last_update);
+  void setBreezeEnabled(bool is_enabled) {
+    m_breeze_enabled = is_enabled;
+    for (Segment* child : m_children) {
+      child->setBreezeEnabled(is_enabled);
+    }
+  }
 
  private:
   SegmentParams m_params;
@@ -201,6 +211,8 @@ class Segment : public Entity {
 
   Phase m_phase = NOT_STARTED;
   float m_time_in_phase = 0.0f;
+
+  bool m_breeze_enabled = false;
 };
 
 #endif

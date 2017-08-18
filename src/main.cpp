@@ -93,6 +93,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
         // TODO: Do something.
       } else if (key == GLFW_KEY_P) {
         g_world->togglePause();
+      } else if (key == GLFW_KEY_B) {
+        g_world->toggleBreeze();
       }
     }
   }

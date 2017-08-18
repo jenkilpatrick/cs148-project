@@ -37,6 +37,9 @@ class Tree : public Entity {
 
   void render() const;
   void update(double time_since_last_update);
+  void setBreezeEnabled(bool is_enabled) {
+    m_trunk->setBreezeEnabled(is_enabled);
+  }
 
  protected:
   Segment* m_trunk;

@@ -13,6 +13,7 @@
 #include <glm/gtc/random.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Tree.h"
 #include "World.h"
 
 void World::render() const {
@@ -94,6 +95,17 @@ void World::update(double time_since_last_update) {
 void World::addEntity(Entity* entity) { m_entities.push_back(entity); }
 
 void World::togglePause() { m_is_paused = !m_is_paused; }
+
+void World::toggleBreeze() {
+  m_breeze_enabled = !m_breeze_enabled;
+
+  for (size_t i = 0; i < m_entities.size(); i++) {
+    Entity* curr = m_entities.at(i);
+    if (curr && curr->m_type == EntityType::ET_TREE) {
+      ((Tree* ) curr)->setBreezeEnabled(m_breeze_enabled);
+    }
+  }
+}
 
 /*
 void toggleGlobalRotation() {
