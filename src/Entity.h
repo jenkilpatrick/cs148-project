@@ -29,6 +29,7 @@ typedef enum et {
   ET_NONE = 0,
   ET_CUBE,
   ET_LIGHT,
+  ET_PLANE,
   ET_SEGMENT,
   ET_SKYBOX,
   ET_TREE,

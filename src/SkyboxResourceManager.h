@@ -21,13 +21,14 @@ class SkyboxResourceManager {
         "res/ame_siege/siege_dn.tga",
         "res/ame_siege/siege_bk.tga",
         "res/ame_siege/siege_ft.tga"
+*/
         "res/ely_hills/hills_rt.tga",
         "res/ely_hills/hills_lf.tga",
         "res/ely_hills/hills_up.tga",
         "res/ely_hills/hills_dn.tga",
         "res/ely_hills/hills_bk.tga",
         "res/ely_hills/hills_ft.tga"
-*/
+/*
 
         "res/skybox_lake/right.jpg",
         "res/skybox_lake/left.jpg",
@@ -35,6 +36,7 @@ class SkyboxResourceManager {
         "res/skybox_lake/bottom.jpg",
         "res/skybox_lake/back.jpg",
         "res/skybox_lake/front.jpg",
+*/
      };
 
     /*

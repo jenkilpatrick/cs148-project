@@ -19,6 +19,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Light.h"
+#include "Plane.h"
+#include "PlaneResourceManager.h"
 #include "Segment.h"
 #include "SegmentResourceManager.h"
 #include "Skybox.h"
@@ -129,6 +131,8 @@ World* createWorld(GLFWwindow* window) {
   World* world = new World(window);
 
   world->addEntity(new Skybox(world->m_skybox_shader, world->m_camera, window));
+
+  world->addEntity(new Plane(world->m_shader, world->m_camera, window));
 
   SegmentResourceManager* segment_resource_manager =
       new SegmentResourceManager();

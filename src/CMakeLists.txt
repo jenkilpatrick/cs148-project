@@ -17,6 +17,7 @@ SET(project_SRCS
         Camera.cpp
         Light.cpp
         main.cpp
+        Plane.cpp
         Segment.cpp
         Skybox.cpp
         stb_image.cpp
