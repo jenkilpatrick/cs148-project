@@ -107,7 +107,8 @@ class Segment : public Entity {
 
     m_goal_radius = seg_params.radius;
     m_goal_height = seg_params.height;
-    m_heading = glm::normalize(seg_params.heading);
+    m_initial_heading = glm::normalize(seg_params.heading);
+    m_heading = m_initial_heading;
     m_resource_manager = resource_manager;
 
     if (seg_params.level >= gen_params.max_levels) {
@@ -204,7 +205,9 @@ class Segment : public Entity {
   float m_goal_radius;
   float m_goal_height;
 
+  glm::vec3 m_initial_heading;
   glm::vec3 m_heading;
+
   SegmentResourceManager* m_resource_manager;
   std::vector<Segment*> m_children;
 

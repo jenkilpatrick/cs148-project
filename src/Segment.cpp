@@ -55,6 +55,10 @@ void Segment::render() const {
 
 void Segment::update(double time_since_last_update) {
   if (m_params.type == LEAF) {
+    if (m_phase != FALLEN) {
+      m_time_in_phase += time_since_last_update;
+    }
+
     double phase_length = 2.0;
     float fall_velocity = 1.0;
     glm::vec3 breeze_direction =
@@ -62,10 +66,12 @@ void Segment::update(double time_since_last_update) {
     float breeze_velocity = 0.4 + 0.3 * sin(m_time_in_phase * 2.0f);
     glm::vec3 down = glm::vec3(0.0f, -1.0f, 0.0f);
 
-
-    if (m_phase != FALLEN) {
-      m_time_in_phase += time_since_last_update;
+    // Update heading based on breeze.
+    if (m_breeze_enabled) {
+      float adjustment = 0.5f + 0.5f * sin(m_time_in_phase * 2.0f);
+      m_heading = m_initial_heading + breeze_direction * adjustment;
     }
+
     switch (m_phase) {
       case NOT_STARTED:
         // Determine whether this leaf should start to grow.
