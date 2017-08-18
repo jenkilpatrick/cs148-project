@@ -16,6 +16,7 @@ void Plane::render() const {
 
     // Compute model matrix
     glm::mat4 output_matrix = glm::translate(glm::mat4(), m_pos);
+    output_matrix = glm::translate(output_matrix, glm::vec3(0, -0.5, 0));
     output_matrix =
         glm::scale(output_matrix, glm::vec3(m_radius, 1.0, m_radius));
 
