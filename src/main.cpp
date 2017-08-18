@@ -159,8 +159,8 @@ World* createWorld(GLFWwindow* window) {
                             g_segment_resource_manager, world->m_camera, window,
                             false));
 
-  world->addEntity(new Light(world->m_shader, glm::vec3(9.0f, 9.0f, 9.0f)));
-  world->addEntity(new Light(world->m_shader, glm::vec3(0.0f, 9.0f, 9.0f)));
+  world->addEntity(new Light(world->m_shader, glm::vec3(0.0f, 20.0f, -9.0f)));
+  world->addEntity(new Light(world->m_shader, glm::vec3(0.0f, 20.0f, 9.0f)));
   world->addEntity(new Light(world->m_shader, glm::vec3(-9.0f, 9.0f, 9.0f)));
         cout << "k" << endl;
 

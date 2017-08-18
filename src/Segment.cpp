@@ -10,11 +10,11 @@
 void Segment::render() const {
   // Make sure always to set the current shader before setting
   // uniforms/drawing objects
-  if (m_params.type == LEAF) {
+/*  if (m_params.type == LEAF) {
     m_leaf_shader->Use();
   } else {
-    m_shader->Use();
-  }
+*/    m_shader->Use();
+//  }
 
   // Set segment color.
   GLint objectColorLoc =
@@ -37,13 +37,14 @@ void Segment::render() const {
       glm::radians(m_params.rotation_deg), y_axis);
   output_matrix =
       glm::scale(output_matrix, glm::vec3(
-           (m_params.type == LEAF) ? 0.001 : m_radius, m_height, m_radius));
+           (m_params.type == LEAF) ? 0.005 : m_radius, m_height, m_radius));
 
   // Get the locations of uniforms for the shader.
   GLint modelLoc = glGetUniformLocation(m_shader->Program, "model");
   glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(output_matrix));
 
   // Draw the cube from its VAO
+/*
   if (m_params.type == LEAF) {
     int w, h;
     glfwGetFramebufferSize(m_window, &w, &h);
@@ -62,8 +63,9 @@ void Segment::render() const {
     glBindTexture(GL_TEXTURE_2D, m_resource_manager->getTexture());
     glBindVertexArray(m_resource_manager->getTextureVAO());
   } else {
+*/
     glBindVertexArray(m_resource_manager->getContainerVAO());
-  }
+//  }
   glDrawArrays(GL_TRIANGLES, 0, 36);
   glBindVertexArray(0);
 
