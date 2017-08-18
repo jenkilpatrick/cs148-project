@@ -134,7 +134,6 @@ void Segment::update(double time_since_last_update) {
         break;
       case FALLING:
         // Update position.
-        std::cout << "breeze:" << (m_breeze_enabled ? "y" : "n") << std::endl;
         if (m_breeze_enabled) {
           m_pos = m_pos
                + (float) time_since_last_update * fall_velocity * down

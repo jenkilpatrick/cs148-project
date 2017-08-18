@@ -1,5 +1,4 @@
 // From hws/hw2/Firework.h
-// TODO: Create h and cpp file
 
 #ifndef TREE_H
 #define TREE_H
@@ -17,7 +16,7 @@
 class Tree : public Entity {
  public:
   Tree(Shader* shader, glm::vec3 position, float height,
-       SegmentResourceManager* segment_resource_manager) {
+       SegmentResourceManager* segment_resource_manager, bool is_got) {
     m_type = ET_TREE;
 
     m_shader = shader;
@@ -28,6 +27,22 @@ class Tree : public Entity {
     seg_params.height = height;
     seg_params.radius = height / 20.0;
     Segment::GenerationParams gen_params;
+
+    if (is_got) {
+      seg_params.radius = 0.5f;
+      seg_params.height = 5.0f;
+
+      gen_params.trunk_contraction_ratio = 0.6f;
+      gen_params.branch_contraction_ratio = 0.6f;
+      gen_params.generate_straight_segment = true;
+      gen_params.num_branches = 3;
+      gen_params.branch_color = glm::vec4(1.0, 1.0, 1.0, 1.0);
+
+      gen_params.leaf_color_green = gen_params.leaf_color_red;
+      gen_params.leaf_color_yellow = gen_params.leaf_color_red;
+      gen_params.leaf_color_orange = gen_params.leaf_color_red;
+      gen_params.leaf_color_brown = gen_params.leaf_color_red;
+    }
 
     m_trunk =
         new Segment(m_shader, segment_resource_manager, seg_params, gen_params);

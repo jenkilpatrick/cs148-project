@@ -32,8 +32,10 @@ class World {
 #ifdef WIN32
     m_shader = new Shader("../phong.vs", "../phong.frag");
 #else
+        cout << "M" << endl;
     m_shader = new Shader("/home/jen/Code/cs148/cs148-project/bin/phong.vs",
                           "/home/jen/Code/cs148/cs148-project/bin/phong.frag");
+        cout << "M" << endl;
     m_skybox_shader = new Shader(
                           "/home/jen/Code/cs148/cs148-project/bin/skybox.vs",
                           "/home/jen/Code/cs148/cs148-project/bin/skybox.frag");

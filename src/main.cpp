@@ -18,6 +18,9 @@
 #include <glm/gtc/random.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/norm.hpp>
+
 #include "Light.h"
 #include "Plane.h"
 #include "PlaneResourceManager.h"
@@ -29,6 +32,9 @@
 
 // UGH is there a way to get rid of this global??
 World* g_world;
+SegmentResourceManager* g_segment_resource_manager;
+World* createWorld(GLFWwindow* window);
+World* createGrove(GLFWwindow* window);
 
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 600;
@@ -96,6 +102,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
       } else if (key == GLFW_KEY_B) {
         g_world->toggleBreeze();
       }
+/*
+      } else if (key == GLFW_KEY_G) {
+        cout << "G" << endl;
+        if (g_world) delete g_world;
+        g_world = createGrove(window);
+      } else if (key == GLFW_KEY_R) {
+        cout << "R" << endl;
+        if (g_world) delete g_world;
+        cout << "k" << endl;
+        g_world = createWorld(window);
+        cout << "L" << endl;
+      }
+*/
     }
   }
 }
@@ -129,29 +148,57 @@ void setupInputHandlers(GLFWwindow* window) {
   glfwSetScrollCallback(window, scroll_callback);
 }
 
+// Create a world with a single tree.
 World* createWorld(GLFWwindow* window) {
-  // TODO: Use unique pointers.
-  // Create the world.
   World* world = new World(window);
 
   world->addEntity(new Skybox(world->m_skybox_shader, world->m_camera, window));
-
   world->addEntity(new Plane(world->m_shader, world->m_camera, window));
 
-  SegmentResourceManager* segment_resource_manager =
-      new SegmentResourceManager();
-
   world->addEntity(new Tree(world->m_shader, glm::vec3(0.0f, 0.0f, 0.0f), 5.0,
-                            segment_resource_manager));
+                            g_segment_resource_manager, false));
 
-  //  world->addEntity(new Tree(world->m_shader, glm::vec3(5.0f, 0.0f, 5.0f),
-  //      2.0, segment_resource_manager));
+  world->addEntity(new Light(world->m_shader, glm::vec3(0.0f, 9.0f, 9.0f)));
+  world->addEntity(new Light(world->m_shader, glm::vec3(-9.0f, 9.0f, 9.0f)));
+        cout << "k" << endl;
+
+  return world;
+}
+
+// Create a world with multiple trees.
+World* createGrove(GLFWwindow* window) {
+  cout << "Creating grove" << endl;
+
+  World* world = new World(window);
+
+  world->addEntity(new Skybox(world->m_skybox_shader, world->m_camera, window));
+  world->addEntity(new Plane(world->m_shader, world->m_camera, window));
+
+  // Create Game of Thrones tree
+  glm::vec3 got_location = glm::vec3(0.0f, 0.0f, -10.0f);
+  world->addEntity(new Tree(world->m_shader, got_location, 5.0,
+                            g_segment_resource_manager, true));
+
+  // Create other trees.
+  int num_trees = 10;
+  for (int i = 0; i < num_trees; i++) {
+    glm::vec2 random_vector = glm::diskRand<float>(18.0);
+    glm::vec3 location = glm::vec3(random_vector[0], 0.0f, random_vector[1]) + got_location;
+    while (glm::distance2(location, got_location) < 5.0) {
+      random_vector = glm::diskRand<float>(15.0);
+      location = glm::vec3(random_vector[0], 0.0f, random_vector[1]) + got_location;
+    }
+
+    float size = glm::linearRand<float>(0.5, 5.0);
+    world->addEntity(new Tree(world->m_shader, location, size,
+                              g_segment_resource_manager, false));
+  }
 
   world->addEntity(new Light(world->m_shader, glm::vec3(0.0f, 9.0f, 9.0f)));
   world->addEntity(new Light(world->m_shader, glm::vec3(-9.0f, 9.0f, 9.0f)));
 
-
   return world;
+
 }
 
 // Control camera movement with keyboard keys
@@ -177,8 +224,10 @@ int main(int argc, char** argv) {
   }
 
   setupInputHandlers(window);
-  World* world = createWorld(window);
-  g_world = world;
+  g_segment_resource_manager = new SegmentResourceManager();
+
+//  g_world = createWorld(window);
+  g_world = createGrove(window);
 
   // Set up variables for time calculations.
   GLfloat deltaTime = 0.0f;
@@ -190,9 +239,9 @@ int main(int argc, char** argv) {
     deltaTime = timeOfCurrentFrame - timeOfLastFrame;
     timeOfLastFrame = timeOfCurrentFrame;
 
-    handleInput(world, deltaTime);
-    world->update(deltaTime);
-    world->render();
+    handleInput(g_world, deltaTime);
+    g_world->update(deltaTime);
+    g_world->render();
   }
 
   glfwTerminate();
