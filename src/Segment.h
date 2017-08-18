@@ -40,6 +40,7 @@ class Segment : public Entity {
     float height = 5.0f;
     glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 heading = glm::vec3(0.0f, 1.0f, 0.0f);
+    float rotation_deg = glm::linearRand<float>(0, 360.0f);
   };
 
   // Configuration parameters for generating new Segments.

@@ -3,6 +3,8 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/vector_angle.hpp>
 
+#include <glm/gtc/random.hpp>
+
 #include "Segment.h"
 
 void Segment::render() const {
@@ -28,8 +30,11 @@ void Segment::render() const {
     }
     output_matrix =
         glm::translate(output_matrix, glm::vec3(0.0f, m_height / 2.0f, 0.0f));
+    output_matrix = glm::rotate(output_matrix,
+        glm::radians(m_params.rotation_deg), y_axis);
     output_matrix =
-        glm::scale(output_matrix, glm::vec3(m_radius, m_height, m_radius));
+        glm::scale(output_matrix, glm::vec3(
+             (m_params.type == LEAF) ? 0.001 : m_radius, m_height, m_radius));
 
     // Get the locations of uniforms for the shader.
     GLint modelLoc = glGetUniformLocation(m_shader->Program, "model");
