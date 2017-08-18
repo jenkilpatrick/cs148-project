@@ -16,7 +16,8 @@
 class Tree : public Entity {
  public:
   Tree(Shader* shader, glm::vec3 position, float height,
-       SegmentResourceManager* segment_resource_manager, bool is_got) {
+       SegmentResourceManager* segment_resource_manager, Camera* camera,
+       GLFWwindow* window, bool is_got) {
     m_type = ET_TREE;
 
     m_shader = shader;
@@ -44,11 +45,19 @@ class Tree : public Entity {
       gen_params.leaf_color_brown = gen_params.leaf_color_red;
     }
 
+    m_leaf_shader = new Shader(
+        "/home/jen/Code/cs148/cs148-project/bin/texture.vs",
+        "/home/jen/Code/cs148/cs148-project/bin/texture.frag");
+
     m_trunk =
-        new Segment(m_shader, segment_resource_manager, seg_params, gen_params);
+        new Segment(m_shader, m_leaf_shader, segment_resource_manager,
+                    seg_params, gen_params, camera, window);
   }
 
-  ~Tree() { delete m_trunk; }
+  ~Tree() {
+    delete m_trunk;
+    delete m_leaf_shader;
+  }
 
   void render() const;
   void update(double time_since_last_update);
@@ -58,6 +67,7 @@ class Tree : public Entity {
 
  protected:
   Segment* m_trunk;
+  Shader* m_leaf_shader;
 };
 
 #endif
