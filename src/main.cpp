@@ -226,8 +226,8 @@ int main(int argc, char** argv) {
   setupInputHandlers(window);
   g_segment_resource_manager = new SegmentResourceManager();
 
-//  g_world = createWorld(window);
-  g_world = createGrove(window);
+  g_world = createWorld(window);
+//  g_world = createGrove(window);
 
   // Set up variables for time calculations.
   GLfloat deltaTime = 0.0f;

@@ -22,11 +22,11 @@ class Plane : public Entity {
   Plane(Shader* shader, Camera* camera, GLFWwindow* window) {
     m_type = ET_PLANE;
     m_shader = shader;
-/*
-new Shader(
+
+    m_shader = new Shader(
         "/home/jen/Code/cs148/cs148-project/bin/texture.vs",
         "/home/jen/Code/cs148/cs148-project/bin/texture.frag");
-*/
+
     m_pos = glm::vec3(0, 0, 0);
     m_color = glm::vec4(0.17, 0.7, 0.17, 1.0);
 
