@@ -12,7 +12,7 @@ void Plane::render() const {
     // Set segment color.
     GLint objectColorLoc =
         glGetUniformLocation(m_shader->Program, "objectColor");
-    glUniform3f(objectColorLoc, 1.0, 1.0, 1.0);
+    glUniform3f(objectColorLoc, m_color[0], m_color[1], m_color[2]);
 
     // Compute model matrix
     glm::mat4 output_matrix = glm::translate(glm::mat4(), m_pos);
@@ -31,6 +31,7 @@ void Plane::render() const {
 
   // Set view matrix.
   glm::mat4 view = m_camera->GetViewMatrix();
+//  glm::mat4 view = glm::mat4(glm::mat3(m_camera->GetViewMatrix()));
   GLint view_loc = glGetUniformLocation(m_shader->Program, "view");
   glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
 
@@ -43,7 +44,7 @@ void Plane::render() const {
   }
 
   // Draw the cube from its VAO
-  glBindTexture(GL_TEXTURE_2D, m_resource_manager->getTexture());
+//  glBindTexture(GL_TEXTURE_2D, m_resource_manager->getTexture());
   glBindVertexArray(m_resource_manager->getContainerVAO());
   glDrawArrays(GL_TRIANGLES, 0, 36);
   glBindVertexArray(0);

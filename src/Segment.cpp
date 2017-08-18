@@ -10,60 +10,41 @@
 void Segment::render() const {
   // Make sure always to set the current shader before setting
   // uniforms/drawing objects
-  if (m_params.type == LEAF) {
-    m_leaf_shader->Use();
-  } else {
+  if (m_shader) {
     m_shader->Use();
+
+    // Set segment color.
+    GLint objectColorLoc =
+        glGetUniformLocation(m_shader->Program, "objectColor");
+    glUniform3f(objectColorLoc, m_color[0], m_color[1], m_color[2]);
+
+    // Calculate relevant axes.
+    glm::vec3 y_axis = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 rotation_axis = glm::normalize(glm::cross(y_axis, m_heading));
+    float rotation_angle = glm::angle(y_axis, m_heading);
+
+    // Compute model matrix
+    glm::mat4 output_matrix = glm::translate(glm::mat4(), m_pos);
+    if (std::abs(rotation_angle) > glm::epsilon<float>()) {
+      output_matrix = glm::rotate(output_matrix, rotation_angle, rotation_axis);
+    }
+    output_matrix =
+        glm::translate(output_matrix, glm::vec3(0.0f, m_height / 2.0f, 0.0f));
+    output_matrix = glm::rotate(output_matrix,
+        glm::radians(m_params.rotation_deg), y_axis);
+    output_matrix =
+        glm::scale(output_matrix, glm::vec3(
+             (m_params.type == LEAF) ? 0.001 : m_radius, m_height, m_radius));
+
+    // Get the locations of uniforms for the shader.
+    GLint modelLoc = glGetUniformLocation(m_shader->Program, "model");
+
+    // Pass the transformed model matrix to the shader.
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(output_matrix));
   }
-
-  // Set segment color.
-  GLint objectColorLoc =
-      glGetUniformLocation(m_shader->Program, "objectColor");
-  glUniform3f(objectColorLoc, m_color[0], m_color[1], m_color[2]);
-
-  // Calculate relevant axes.
-  glm::vec3 y_axis = glm::vec3(0.0f, 1.0f, 0.0f);
-  glm::vec3 rotation_axis = glm::normalize(glm::cross(y_axis, m_heading));
-  float rotation_angle = glm::angle(y_axis, m_heading);
-
-  // Compute model matrix
-  glm::mat4 output_matrix = glm::translate(glm::mat4(), m_pos);
-  if (std::abs(rotation_angle) > glm::epsilon<float>()) {
-    output_matrix = glm::rotate(output_matrix, rotation_angle, rotation_axis);
-  }
-  output_matrix =
-      glm::translate(output_matrix, glm::vec3(0.0f, m_height / 2.0f, 0.0f));
-  output_matrix = glm::rotate(output_matrix,
-      glm::radians(m_params.rotation_deg), y_axis);
-  output_matrix =
-      glm::scale(output_matrix, glm::vec3(
-           (m_params.type == LEAF) ? 0.001 : m_radius, m_height, m_radius));
-
-  // Get the locations of uniforms for the shader.
-  GLint modelLoc = glGetUniformLocation(m_shader->Program, "model");
-  glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(output_matrix));
 
   // Draw the cube from its VAO
-  if (m_params.type == LEAF) {
-    int w, h;
-    glfwGetFramebufferSize(m_window, &w, &h);
-
-    // Set view matrix.
-    glm::mat4 view = m_camera->GetViewMatrix();
-    GLint view_loc = glGetUniformLocation(m_shader->Program, "view");
-    glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
-
-    // Set projection matrix.
-    glm::mat4 projection =
-        glm::perspective(m_camera->Zoom, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
-    GLint proj_loc = glGetUniformLocation(m_shader->Program, "projection");
-    glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
-
-    glBindTexture(GL_TEXTURE_2D, m_resource_manager->getTexture());
-    glBindVertexArray(m_resource_manager->getTextureVAO());
-  } else {
-    glBindVertexArray(m_resource_manager->getContainerVAO());
-  }
+  glBindVertexArray(m_resource_manager->getContainerVAO());
   glDrawArrays(GL_TRIANGLES, 0, 36);
   glBindVertexArray(0);
 

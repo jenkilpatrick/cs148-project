@@ -3,14 +3,11 @@
 #ifndef SEGMENT_H
 #define SEGMENT_H
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <vector>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
 
-#include "Camera.h"
 #include "Entity.h"
 #include "SegmentResourceManager.h"
 #include "Shader.h"
@@ -81,22 +78,17 @@ class Segment : public Entity {
     float leaf_radius = 0.3f;
   };
 
-  Segment(Shader* shader, Shader* leaf_shader,
-          SegmentResourceManager* resource_manager,
-          SegmentParams& seg_params, GenerationParams& gen_params,
-          Camera* camera, GLFWwindow* window) {
+  Segment(Shader* shader, SegmentResourceManager* resource_manager,
+          SegmentParams& seg_params, GenerationParams& gen_params) {
     m_type = ET_SEGMENT;
 
     // TODO: Replace with parent constructor?
     // Set parent class's variables.
     m_shader = shader;
-    m_leaf_shader = leaf_shader;
     m_params = seg_params;
     m_pos = seg_params.position;
     m_color = (seg_params.type == LEAF) ? gen_params.leaf_color_green
                                         : gen_params.branch_color;
-    m_camera = camera;
-    m_window = window;
 
     // TODO: Fix this setup...it's an ugly way to store these!
     m_changing_colors[0] = gen_params.leaf_color_green;
@@ -133,7 +125,7 @@ class Segment : public Entity {
       child.position = branch_position;
       child.level += 1;
       m_children.push_back(
-          new Segment(m_shader, m_leaf_shader, resource_manager, child, gen_params, m_camera, m_window));
+          new Segment(m_shader, resource_manager, child, gen_params));
       return;
     }
 
@@ -148,7 +140,7 @@ class Segment : public Entity {
       child.position = branch_position;
       child.level += 1;
       m_children.push_back(
-          new Segment(m_shader, m_leaf_shader, resource_manager, child, gen_params, m_camera, m_window));
+          new Segment(m_shader, resource_manager, child, gen_params));
     }
 
     for (int i = 0; i < gen_params.num_branches; i++) {
@@ -186,7 +178,7 @@ class Segment : public Entity {
       }
 
       m_children.push_back(
-          new Segment(m_shader, m_leaf_shader, resource_manager, child, gen_params, m_camera, m_window));
+          new Segment(m_shader, resource_manager, child, gen_params));
     }
   }
 
@@ -207,11 +199,6 @@ class Segment : public Entity {
 
  private:
   SegmentParams m_params;
-  Shader * m_leaf_shader;
-
-  Camera* m_camera;
-  GLFWwindow* m_window;
-
   float m_radius;
   float m_height;
 

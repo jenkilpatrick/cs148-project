@@ -156,10 +156,8 @@ World* createWorld(GLFWwindow* window) {
   world->addEntity(new Plane(world->m_shader, world->m_camera, window));
 
   world->addEntity(new Tree(world->m_shader, glm::vec3(0.0f, 0.0f, 0.0f), 5.0,
-                            g_segment_resource_manager, world->m_camera, window,
-                            false));
+                            g_segment_resource_manager, false));
 
-  world->addEntity(new Light(world->m_shader, glm::vec3(9.0f, 9.0f, 9.0f)));
   world->addEntity(new Light(world->m_shader, glm::vec3(0.0f, 9.0f, 9.0f)));
   world->addEntity(new Light(world->m_shader, glm::vec3(-9.0f, 9.0f, 9.0f)));
         cout << "k" << endl;
@@ -179,28 +177,23 @@ World* createGrove(GLFWwindow* window) {
   // Create Game of Thrones tree
   glm::vec3 got_location = glm::vec3(0.0f, 0.0f, -10.0f);
   world->addEntity(new Tree(world->m_shader, got_location, 5.0,
-                            g_segment_resource_manager, world->m_camera,
-                            window, true));
+                            g_segment_resource_manager, true));
 
   // Create other trees.
   int num_trees = 10;
   for (int i = 0; i < num_trees; i++) {
     glm::vec2 random_vector = glm::diskRand<float>(18.0);
-    glm::vec3 location = glm::vec3(random_vector[0], 0.0f,
-        random_vector[1]) + got_location;
+    glm::vec3 location = glm::vec3(random_vector[0], 0.0f, random_vector[1]) + got_location;
     while (glm::distance2(location, got_location) < 5.0) {
       random_vector = glm::diskRand<float>(15.0);
-      location = glm::vec3(random_vector[0], 0.0f,
-          random_vector[1]) + got_location;
+      location = glm::vec3(random_vector[0], 0.0f, random_vector[1]) + got_location;
     }
 
     float size = glm::linearRand<float>(0.5, 5.0);
     world->addEntity(new Tree(world->m_shader, location, size,
-                              g_segment_resource_manager, world->m_camera,
-                              window, false));
+                              g_segment_resource_manager, false));
   }
 
-  world->addEntity(new Light(world->m_shader, glm::vec3(9.0f, 9.0f, 9.0f)));
   world->addEntity(new Light(world->m_shader, glm::vec3(0.0f, 9.0f, 9.0f)));
   world->addEntity(new Light(world->m_shader, glm::vec3(-9.0f, 9.0f, 9.0f)));
 
