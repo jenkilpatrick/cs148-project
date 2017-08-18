@@ -91,6 +91,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
       keys[key] = false;
       if (key == GLFW_KEY_2) {
         // TODO: Do something.
+      } else if (key == GLFW_KEY_P) {
+        g_world->togglePause();
       }
     }
   }

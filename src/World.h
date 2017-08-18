@@ -55,6 +55,7 @@ class World {
   void addEntity(Entity* entity);
   void render() const;
   void update(double time_since_last_update);
+  void togglePause();
 
   Shader* m_shader;
   Shader* m_skybox_shader;
@@ -63,6 +64,7 @@ class World {
  private:
   GLFWwindow* m_window;
   vector<Entity*> m_entities;
+  bool m_is_paused = false;
 
   void handleCollisions(Entity* entity);
 };
